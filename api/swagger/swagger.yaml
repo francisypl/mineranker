@@ -5,7 +5,7 @@ info:
 # during dev, should point to your local machine
 host: localhost:10010
 # basePath prefixes all resource paths 
-basePath: /
+basePath: /api/v1
 # 
 schemes:
   # tip: remove http to make production-grade
@@ -18,26 +18,81 @@ consumes:
 produces:
   - application/json
 paths:
-  /hello:
-    # binds a127 app logic to a route
-    x-swagger-router-controller: hello_world
+  /story:
+    x-swagger-router-controller: story
     get:
-      description: Returns 'Hello' to the caller
-      # used as the method name of the controller
-      operationId: hello
+      description: Gets the latest stories
+      operationId: getStories
       parameters:
-        - name: name
+        - name: limit
           in: query
-          description: The name of the person to whom to say hello
+          description: the amount of stories to fetch (max 300)
           required: false
-          type: string
+          type: integer
+        - name: offset
+          in: query
+          description: the offset to start fetching from
+          required: false
+          type: integer
       responses:
         "200":
           description: Success
           schema:
+            type: array
             # a pointer to a definition
-            $ref: "#/definitions/HelloWorldResponse"
+            items:
+              $ref: "#/definitions/Story"
         # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    post:
+      description: Miners use this route to insert new enriched stories into the system
+      operationId: insertNewStories
+      parameters:
+        - name: newStory
+          in: body
+          description: The name of the person to whom to say hello
+          required: true
+          schema: 
+            properties:
+              stories:
+                type: array
+                items:
+                  $ref: "#/definitions/InsertStory"
+      responses:
+        "200":
+          description: Success
+          schema:
+            type: array
+            # a pointer to a definition
+            items:
+              $ref: "#/definitions/Story"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    patch:
+      description: To upvote or downvote a story
+      operationId: voteOnStory
+      parameters:
+        - name: story_id
+          in: query
+          description: the id of the story to upvote or downvote on
+          required: true
+          type: integer
+        - name: upvote
+          in: query
+          description: upvote a story, if it is false then downvote a story
+          required: true
+          type: boolean
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Story"
         default:
           description: Error
           schema:
@@ -46,15 +101,43 @@ paths:
     x-swagger-pipe: swagger_raw
 # complex objects have schema definitions
 definitions:
-  HelloWorldResponse:
-    required:
-      - message
-    properties:
-      message:
-        type: string
   ErrorResponse:
     required:
       - message
     properties:
       message:
         type: string
+  InsertStory:
+    required:
+      - source
+      - title
+      - url
+      - og_image_url
+      - description
+    properties:
+      source:
+        type: integer
+      title:
+        type: string
+      url:
+        type: string
+      og_image_url:
+        type: string
+      description:
+        type: string
+  Story:
+    type: object
+    allOf:
+      - $ref: "#/definitions/InsertStory"
+      - type: object
+        required:
+          - id
+          - upvotes
+          - downvotes
+        properties:
+          id: 
+            type: integer
+          upvotes:
+            type: integer
+          downvotes:
+            type: integer
