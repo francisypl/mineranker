@@ -1,0 +1,34 @@
+{
+  "name": "sedaily",
+  "version": "0.0.1",
+  "private": true,
+  "description": "New Swagger API Project",
+  "keywords": [],
+  "author": "",
+  "license": "",
+  "main": "app.js",
+  "dependencies": {
+    "bluebird": "^3.4.7",
+    "mongo": "^0.1.0",
+    "restify": "^4.0.2",
+    "swagger-restify-mw": "^0.1.0",
+    "underscore": "^1.8.3"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "nodemon": "^1.11.0",
+    "babel-cli": "^6.9.0",
+    "babel-core": "^6.9.0",
+    "babel-polyfill": "^6.20.0",
+    "babel-preset-es2015": "^6.9.0",
+    "babel-preset-stage-0": "^6.5.0",
+    "babel-register": "^6.18.0",
+    "eslint": "^3.1.1",
+    "sinon": "^1.17.7"
+  },
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon -w api --exec \"babel-node app.js --presets es2015,stage-0\"",
+    "test": "swagger project test"
+  }
+}
