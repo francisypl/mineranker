@@ -1,5 +1,6 @@
 const config = require('config');
 const MongoClient = require('mongodb').MongoClient;
+const ObjectID = require('mongodb').ObjectID;
 const Promise = require('bluebird');
 
 var database;
@@ -19,7 +20,23 @@ if (!database) {
 }
 
 module.exports = {
+    /**
+     * Returns the default collection.
+     */
     getCollection() {
         return database.collection(config.get('db.default_collection'));
+    },
+
+    /**
+     * Gets the Mongo Object Id with a id string.
+     * @param idStr {String} - the id String
+     * @return {Object} if idStr is a valid id or {null}
+     */
+    getObjectId(idStr) {
+        if (ObjectID.isValid(idStr)) {
+            return new ObjectID(idStr);
+        }
+
+        return null;
     }
 };

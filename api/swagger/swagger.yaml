@@ -31,9 +31,9 @@ paths:
           type: integer
         - name: offset
           in: query
-          description: the offset to start fetching from
+          description: the id of the last story retrieved
           required: false
-          type: integer
+          type: string
       responses:
         "200":
           description: Success
@@ -56,19 +56,14 @@ paths:
           description: The name of the person to whom to say hello
           required: true
           schema: 
-            properties:
-              stories:
-                type: array
-                items:
-                  $ref: "#/definitions/InsertStory"
+            type: array
+            items:
+              $ref: "#/definitions/InsertStory"
       responses:
         "200":
           description: Success
           schema:
-            type: array
-            # a pointer to a definition
-            items:
-              $ref: "#/definitions/Story"
+            $ref: "#/definitions/SuccessResponse"
         # responses may fall through to errors
         default:
           description: Error
@@ -82,7 +77,7 @@ paths:
           in: query
           description: the id of the story to upvote or downvote on
           required: true
-          type: integer
+          type: string
         - name: upvote
           in: query
           description: upvote a story, if it is false then downvote a story
@@ -101,6 +96,12 @@ paths:
     x-swagger-pipe: swagger_raw
 # complex objects have schema definitions
 definitions:
+  SuccessResponse:
+    required:
+      - message
+    properties:
+      message:
+        type: string
   ErrorResponse:
     required:
       - message
@@ -111,12 +112,10 @@ definitions:
     required:
       - source
       - title
-      - url
-      - og_image_url
       - description
     properties:
       source:
-        type: integer
+        type: string
       title:
         type: string
       url:
@@ -136,7 +135,7 @@ definitions:
           - downvotes
         properties:
           id: 
-            type: integer
+            type: string
           upvotes:
             type: integer
           downvotes:
