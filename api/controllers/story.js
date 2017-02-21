@@ -1,4 +1,4 @@
-const _ = require('underscore');
+const story = require('../models/story');
 
 function getStories(req, res) {
 

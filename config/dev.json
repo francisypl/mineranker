@@ -1,0 +1,9 @@
+{
+    "db": {
+        "url": "mongodb://localhost:27017/sedaily",
+        "config": {
+            "poolSize": 10
+        },
+        "default_collection": "story"
+    }
+}

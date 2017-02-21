@@ -9,7 +9,8 @@
   "main": "app.js",
   "dependencies": {
     "bluebird": "^3.4.7",
-    "mongo": "^0.1.0",
+    "config": "^1.25.1",
+    "mongodb": "^2.2.24",
     "restify": "^4.0.2",
     "swagger-restify-mw": "^0.1.0",
     "underscore": "^1.8.3"
@@ -28,7 +29,8 @@
   },
   "scripts": {
     "start": "node app.js",
-    "dev": "nodemon -w api --exec \"babel-node app.js --presets es2015,stage-0\"",
-    "test": "swagger project test"
+    "dev": "nodemon -w api --exec \"NODE_ENV=dev babel-node app.js --presets es2015,stage-0\"",
+    "test": "swagger project test",
+    "edit": "swagger project edit"
   }
 }

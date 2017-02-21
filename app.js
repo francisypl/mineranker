@@ -19,4 +19,5 @@ SwaggerRestify.create(config, function(err, swaggerRestify) {
 
     var port = process.env.PORT || 10010;
     app.listen(port);
+    console.log(`Started on ${port}...`);
 });
