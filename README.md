@@ -1,15 +1,15 @@
 # minneranker
 
 ## Description
-NewsBox is the easiest and most extensible open source news feed platform ever created. Users can subscribe to or build their own miners (news source) and choose their own ranking algorithm to determine in what order or what stories from those miners to display. And as mentioned, there are two components to NewsBox: miners and rankers. Miners aggregate and enrich stories to be added to the NewsBox database. Rankers filter and sort stories to be displayed on each user’s personal news feed.
+Mineranker is the easiest and most extensible open source news feed platform ever created. Users can subscribe to or build their own miners (news source) and choose their own ranking algorithm to determine in what order or what stories from those miners to display. And as mentioned, there are two components to Mineranker: miners and rankers. Miners aggregate and enrich stories to be added to the Mineranker database. Rankers filter and sort stories to be displayed on each user’s personal news feed.
 
-An example of a miner is the HackerNews miner: a HN miner can hit the HN API to get some skeleton data then it would enrich that data by scraping the url of the item and then put together a short summary of the article. This enriched story would then be added to the NewsBox database. An example of a ranker is the Upvote ranker: the upvote ranker can filter out anything that has less than 50 upvotes and sorts the stories by upvotes to display in descending order.
+An example of a miner is the HackerNews miner: a HN miner can hit the HN API to get some skeleton data then it would enrich that data by scraping the url of the item and then put together a short summary of the article. This enriched story would then be added to the Mineranker database. An example of a ranker is the Upvote ranker: the upvote ranker can filter out anything that has less than 50 upvotes and sorts the stories by upvotes to display in descending order.
 
 ## Architecture
 There are 3 major topics of architecture to be discussed: the Application Architecture, the Miner Architecture and the Ranker Architecture.
 
 ### Application Architecture
-NewsBox is a web based application. NewsBox has a React/Redux web application that talks to an Application API (Restify Node API with a Swagger interface) and its data persists on a Mongo database.
+Mineranker is a web based application. Mineranker has a React/Redux web application that talks to an Application API (Restify Node API with a Swagger interface) and its data persists on a Mongo database.
 
 ### Miner Architecture
 A Miner is free from any architectural restrictions. A miner can be built in any way shape or form, it just has to call the Application API to store enriched stories to the DB.
