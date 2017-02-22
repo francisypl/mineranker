@@ -63,6 +63,17 @@ module.exports = {
     },
 
     /**
+     * Fetches all stories in the story collection.
+     * @return {Promise}
+     */
+    fetchAll() {
+        return db.getCollection().find().toArray()
+            .then(function(stories) {
+                return Promise.resolve(stories);
+            });
+    },
+
+    /**
      * Upvote or Downvote on a story.
      * @param storyId {String} - the story's string id
      * @param upvote {Boolean} - if true then upvote this story

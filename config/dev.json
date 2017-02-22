@@ -5,5 +5,8 @@
             "poolSize": 10
         },
         "default_collection": "story"
+    },
+    "story": {
+        "fetchLimit": 30
     }
 }

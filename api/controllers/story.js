@@ -1,7 +1,14 @@
 const story = require('../models/story');
 
 function getStories(req, res) {
-
+    story.fetchAll()
+        .then(function(stories) {
+            return res.json(200, stories);
+        })
+        .catch(function(err) {
+            console.log(err);
+            return res.json(400, 'Failed to fetch stories');
+        });
 }
 
 function insertNewStories(req, res) {
