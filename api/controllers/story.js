@@ -21,15 +21,17 @@ function insertNewStories(req, res) {
 }
 
 function voteOnStory(req, res) {
+    let fetchedStory;
     let {story_id, upvote} = req.query;
     upvote = upvote.toLowerCase() === 'true';
 
     story.fetchById(story_id)
-        .then(function(story) {
-            return story.voteOnStory(story._id, upvote);
-        })
         .then(function(resultStory) {
-            return res.json(200, resultStory);
+            fetchedStory = resultStory;
+            return story.voteOnStory(fetchedStory._id, upvote);
+        })
+        .then(function(transformer) {
+            return res.json(200, transformer(fetchedStory));
         })
         .catch(function(err) {
             console.log(err);

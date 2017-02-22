@@ -34,9 +34,10 @@ module.exports = {
      */
     insertStories(stories) {
         let richStories = _.map(stories, enrichStory);
-        return db.getCollection().insertMany(richStories).then(function(data) {
-            return Promise.resolve(data.insertedCount);
-        });
+        return db.getCollection().insertMany(richStories)
+            .then(function(data) {
+                return Promise.resolve(data.insertedCount);
+            });
     },
 
     /**
@@ -51,13 +52,14 @@ module.exports = {
             return Promise.reject('id string is not valid');
         }
 
-        return db.find({_id: objId}).toArray().then(function(fetchedStory) {
-            if (_.isEmpty(fetchedStory)) {
-                return Promise.reject('id is not found');
-            }
+        return db.getCollection().find({_id: objId}).toArray()
+            .then(function(fetchedStory) {
+                if (_.isEmpty(fetchedStory)) {
+                    return Promise.reject('id is not found');
+                }
 
-            return Promise.resolve(fetchedStory[0]);
-        });
+                return Promise.resolve(fetchedStory[0]);
+            });
     },
 
     /**
@@ -67,6 +69,38 @@ module.exports = {
      * @return {Promise}
      */
     voteOnStory(storyId, upvote) {
-        
+        let objectId = db.getObjectId(storyId);
+        let voteObj = {
+            $inc: null
+        };
+
+        if (!objectId) {
+            return Promise.reject('story id is not a valid id string');
+        }
+
+        if (upvote) {
+            voteObj.$inc = {
+                upvote: 1
+            };
+        }
+        else {
+            voteObj.$inc = {
+                downvote: 1
+            };
+        }
+
+        return db.getCollection().update({_id: objectId}, voteObj)
+            .then(function() {
+                return Promise.resolve(updatedStory => {
+                    if (upvote) {
+                        updatedStory.upvote += 1;
+                    }
+                    else {
+                        updatedStory.downvote += 1;
+                    }
+
+                    return updatedStory;
+                });
+            });
     }
 };

@@ -130,13 +130,13 @@ definitions:
       - $ref: "#/definitions/InsertStory"
       - type: object
         required:
-          - id
-          - upvotes
-          - downvotes
+          - _id
+          - upvote
+          - downvote
         properties:
-          id: 
+          _id: 
             type: string
-          upvotes:
+          upvote:
             type: integer
-          downvotes:
+          downvote:
             type: integer
