@@ -112,7 +112,7 @@ definitions:
     required:
       - source
       - title
-      - description
+      - url
     properties:
       source:
         type: string
