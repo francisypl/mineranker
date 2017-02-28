@@ -1,0 +1,264 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<PostView {...props} /> gracefully handles error if a problem was encountered 1`] = `
+<div
+  className="container_1hpj00t"
+>
+  <div
+    className="header_dqzfq"
+  >
+    <img
+      className="logo_gt6fx2"
+      src="test-file-stub"
+    />
+    <a
+      className="nav_1o07ka5-o_O-selected_104b05c"
+      href="javascript:void(0)"
+      onClick={[Function]}
+    >
+      news
+    </a>
+  </div>
+  <div
+    className="wrapper_1bc0z68"
+  >
+    <span
+      className="error_13jehyk"
+    >
+      Problem connecting to the network
+    </span>
+  </div>
+</div>
+`;
+
+exports[`<PostView {...props} /> renders correctly 1`] = `
+<div
+  className="container_1hpj00t"
+>
+  <div
+    className="header_dqzfq"
+  >
+    <img
+      className="logo_gt6fx2"
+      src="test-file-stub"
+    />
+    <a
+      className="nav_1o07ka5-o_O-selected_104b05c"
+      href="javascript:void(0)"
+      onClick={[Function]}
+    >
+      news
+    </a>
+  </div>
+  <div
+    className="wrapper_1bc0z68"
+  >
+    <div
+      className="container_1ox283w"
+    >
+      <div
+        className="container_1ssoezr"
+      >
+        <img
+          className="image_kt1q8t"
+          src={undefined}
+        />
+      </div>
+      <div
+        className="body_gexgkn"
+      >
+        <span
+          className="title_njp6s6"
+        />
+        <span
+          className="description_14rca9u"
+        />
+      </div>
+      <div
+        className="footer_diuw3w"
+      >
+        <div>
+          <a
+            className="vote_12qtyj8"
+            href="javascript:void(0)"
+            onClick={[Function]}
+          >
+            <img
+              className="svg_1qn01rn"
+              src="test-file-stub"
+            />
+            <span
+              className="voteText_vxbm49"
+            />
+          </a>
+          <a
+            className="vote_12qtyj8"
+            href="javascript:void(0)"
+            onClick={[Function]}
+          >
+            <img
+              className="svg_1qn01rn"
+              src="test-file-stub"
+            />
+            <span
+              className="voteText_vxbm49"
+            />
+          </a>
+        </div>
+        <div
+          className="link_1e37oh4"
+        >
+          <a
+            className="goto_12qtyj8"
+            href={undefined}
+            target="_blank"
+          >
+            <span
+              className="gotoText_vxbm49"
+            >
+              go to site
+            </span>
+            <img
+              className="svg_1qn01rn"
+              src="test-file-stub"
+            />
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`<PostView {...props} /> renders loading icon when loading more posts 1`] = `
+<div
+  className="container_1hpj00t"
+>
+  <div
+    className="header_dqzfq"
+  >
+    <img
+      className="logo_gt6fx2"
+      src="test-file-stub"
+    />
+    <a
+      className="nav_1o07ka5-o_O-selected_104b05c"
+      href="javascript:void(0)"
+      onClick={[Function]}
+    >
+      news
+    </a>
+  </div>
+  <div
+    className="wrapper_1bc0z68"
+  >
+    <div
+      className="container_1ox283w"
+    >
+      <div
+        className="container_1ssoezr"
+      >
+        <img
+          className="image_kt1q8t"
+          src={undefined}
+        />
+      </div>
+      <div
+        className="body_gexgkn"
+      >
+        <span
+          className="title_njp6s6"
+        />
+        <span
+          className="description_14rca9u"
+        />
+      </div>
+      <div
+        className="footer_diuw3w"
+      >
+        <div>
+          <a
+            className="vote_12qtyj8"
+            href="javascript:void(0)"
+            onClick={[Function]}
+          >
+            <img
+              className="svg_1qn01rn"
+              src="test-file-stub"
+            />
+            <span
+              className="voteText_vxbm49"
+            />
+          </a>
+          <a
+            className="vote_12qtyj8"
+            href="javascript:void(0)"
+            onClick={[Function]}
+          >
+            <img
+              className="svg_1qn01rn"
+              src="test-file-stub"
+            />
+            <span
+              className="voteText_vxbm49"
+            />
+          </a>
+        </div>
+        <div
+          className="link_1e37oh4"
+        >
+          <a
+            className="goto_12qtyj8"
+            href={undefined}
+            target="_blank"
+          >
+            <span
+              className="gotoText_vxbm49"
+            >
+              go to site
+            </span>
+            <img
+              className="svg_1qn01rn"
+              src="test-file-stub"
+            />
+          </a>
+        </div>
+      </div>
+    </div>
+    <span
+      className="fa fa-spinner fa-spin spinner_wdemd5-o_O-spinner_1tj8unv"
+    />
+  </div>
+</div>
+`;
+
+exports[`<PostView {...props} /> renders zero posts 1`] = `
+<div
+  className="container_1hpj00t"
+>
+  <div
+    className="header_dqzfq"
+  >
+    <img
+      className="logo_gt6fx2"
+      src="test-file-stub"
+    />
+    <a
+      className="nav_1o07ka5-o_O-selected_104b05c"
+      href="javascript:void(0)"
+      onClick={[Function]}
+    >
+      news
+    </a>
+  </div>
+  <div
+    className="wrapper_1bc0z68"
+  >
+    <div
+      className="noResults_1amdm9c"
+    >
+      Sorry, nothing found :(
+    </div>
+  </div>
+</div>
+`;

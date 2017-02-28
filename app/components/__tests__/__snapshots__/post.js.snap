@@ -1,0 +1,175 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Post {...props} /> renders children 1`] = `
+<div
+  className="container_1ox283w"
+>
+  <div
+    className="container_1ssoezr"
+  >
+    <img
+      className="image_kt1q8t"
+      src="localhost/photo-url"
+    />
+  </div>
+  <div
+    className="body_gexgkn"
+  >
+    <span
+      className="title_njp6s6"
+    >
+      React Native at Instagram
+    </span>
+    <span
+      className="description_14rca9u"
+    >
+      React Native has come a long way since it was open-sourced in 2015. Fewer than two years later, it’s being used not only in Facebook and Facebook Ads Manager, but also in many other companies, from Fortune 500 companies to hot new startups
+    </span>
+  </div>
+  <div>
+    Test 1
+  </div>
+  <div>
+    Test 2
+  </div>
+  <div
+    className="footer_diuw3w"
+  >
+    <div>
+      <a
+        className="vote_12qtyj8"
+        href="javascript:void(0)"
+        onClick={[Function]}
+      >
+        <img
+          className="svg_1qn01rn"
+          src="test-file-stub"
+        />
+        <span
+          className="voteText_vxbm49"
+        >
+          142
+        </span>
+      </a>
+      <a
+        className="vote_12qtyj8"
+        href="javascript:void(0)"
+        onClick={[Function]}
+      >
+        <img
+          className="svg_1qn01rn"
+          src="test-file-stub"
+        />
+        <span
+          className="voteText_vxbm49"
+        >
+          24
+        </span>
+      </a>
+    </div>
+    <div
+      className="link_1e37oh4"
+    >
+      <a
+        className="goto_12qtyj8"
+        href="https://example.com/"
+        target="_blank"
+      >
+        <span
+          className="gotoText_vxbm49"
+        >
+          go to site
+        </span>
+        <img
+          className="svg_1qn01rn"
+          src="test-file-stub"
+        />
+      </a>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`<Post {...props} /> renders correctly 1`] = `
+<div
+  className="container_1ox283w"
+>
+  <div
+    className="container_1ssoezr"
+  >
+    <img
+      className="image_kt1q8t"
+      src="localhost/photo-url"
+    />
+  </div>
+  <div
+    className="body_gexgkn"
+  >
+    <span
+      className="title_njp6s6"
+    >
+      React Native at Instagram
+    </span>
+    <span
+      className="description_14rca9u"
+    >
+      React Native has come a long way since it was open-sourced in 2015. Fewer than two years later, it’s being used not only in Facebook and Facebook Ads Manager, but also in many other companies, from Fortune 500 companies to hot new startups
+    </span>
+  </div>
+  <div
+    className="footer_diuw3w"
+  >
+    <div>
+      <a
+        className="vote_12qtyj8"
+        href="javascript:void(0)"
+        onClick={[Function]}
+      >
+        <img
+          className="svg_1qn01rn"
+          src="test-file-stub"
+        />
+        <span
+          className="voteText_vxbm49"
+        >
+          142
+        </span>
+      </a>
+      <a
+        className="vote_12qtyj8"
+        href="javascript:void(0)"
+        onClick={[Function]}
+      >
+        <img
+          className="svg_1qn01rn"
+          src="test-file-stub"
+        />
+        <span
+          className="voteText_vxbm49"
+        >
+          24
+        </span>
+      </a>
+    </div>
+    <div
+      className="link_1e37oh4"
+    >
+      <a
+        className="goto_12qtyj8"
+        href="https://example.com/"
+        target="_blank"
+      >
+        <span
+          className="gotoText_vxbm49"
+        >
+          go to site
+        </span>
+        <img
+          className="svg_1qn01rn"
+          src="test-file-stub"
+        />
+      </a>
+    </div>
+  </div>
+</div>
+`;
