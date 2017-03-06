@@ -109,6 +109,7 @@
     "compile:app": "webpack -r dotenv/config --progress --profile --colors --display-error-details --display-cached",
     "compile:app:watch": "webpack-dev-server -r dotenv/config --hot --inline --watch --progress --profile --colors --display-error-details --display-cached --content-base build/adforprize",
     "dev": "nodemon -w api --exec \"NODE_ENV=dev babel-node app.js --presets es2015,stage-0\"",
+    "api:prod": "NODE_ENV=production babel-node app.js --presets es2015,stage-0",
     "edit": "swagger project edit",
     "flow": "flow check",
     "lint:app": "eslint app/",
@@ -118,5 +119,8 @@
     "test:app": "npm run flow && npm run lint:app && npm run test:unit",
     "test:unit": "jest",
     "test:unit:watch": "jest --watch"
+  },
+  "engines": {
+    "node": "6.4.0"
   }
 }

@@ -1,0 +1,12 @@
+{
+    "db": {
+        "url": "mongodb://user:user@ds119210.mlab.com:19210/heroku_zc1hkn0r",
+        "config": {
+            "poolSize": 10
+        },
+        "default_collection": "story"
+    },
+    "story": {
+        "fetchLimit": 30
+    }
+}
