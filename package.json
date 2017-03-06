@@ -28,9 +28,8 @@
     "sinon": "^1.17.7"
   },
   "scripts": {
-    "start": "node app.js",
+    "start": "NODE_ENV=production babel-node app.js --presets es2015,stage-0",
     "dev": "nodemon -w api --exec \"NODE_ENV=dev babel-node app.js --presets es2015,stage-0\"",
-    "api:prod": "npm install && NODE_ENV=production babel-node app.js --presets es2015,stage-0",
     "test": "swagger project test",
     "edit": "swagger project edit"
   },
