@@ -1,1 +1,1 @@
-web: npm run api:prod
+web: npm install; npm run api:prod;
