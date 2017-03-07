@@ -15,8 +15,7 @@ import * as api from './../services/api'
 // pull any application data from redux needed for view
 function mapStateToProps (state) {
   return {
-    ...state.post,
-    video: state.video,
+    ...state.post
   }
 }
 
@@ -30,50 +29,26 @@ class PostProvider extends Component {
 
     // Bind functions
     this.onLoadMore = this.onLoadMore.bind(this)
-    this.onNavigate = this.onNavigate.bind(this)
   }
 
   componentDidMount () {
-    const { params } = this.props
-
-    if (params && params.q) {
-      console.log('params', params)
-      this.onSearch(params.q)
-    } else {
-      // Load global posts
-      this.onLoadMore()
-    }
+    this.onLoadMore()
   }
 
   render (): React.Element<any> {
     const props = {
       ...this.props,
-      onLoadMore: this.onLoadMore,
-      onStartVideo: this.onStartVideo,
-      onStopVideo: this.onStopVideo,
-      onSearch: this.onSearch,
-      onNavigate: this.onNavigate,
+      onLoadMore: this.onLoadMore
     }
 
     return <PostView {...props} />
   }
 
   onLoadMore (): void {
-    const { dispatch, lastId, query } = this.props
-    console.log('loading more | query | lastId', query, lastId)
-    if (query !== '') {
-      dispatch(search(query, lastId, api))
-    } else {
-      dispatch(getPosts(lastId, api))
-    }
-  }
+    const { dispatch, lastId } = this.props
+    console.log('loading more | lastId', lastId)
 
-  onNavigate (path) {
-    const { dispatch } = this.props
-
-    dispatch(clearSearch())
-    dispatch(getPosts('0', api))
-    dispatch(push(path))
+    dispatch(getPosts(lastId, api))
   }
 }
 

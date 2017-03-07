@@ -7,7 +7,6 @@ const log = debug('reducer:ducks:post')
 
 type State = {|
   hasError: boolean,
-  query: string,
   error?: string,
   isWorking: boolean,
   posts: Array<PostType>,
@@ -15,17 +14,21 @@ type State = {|
   loadMoreThreshold: number,
 |}
 
+const POST_FETCHING  = '@post/FETCHING_POSTS'
+const POST_FETCHED   = '@post/FETCHED_POSTS'
+const POST_FETCH_ERR = '@post/FETCHING_POSTS_ERROR'
+
 export function getPosts (lastId: string = '0', api: Api) {
   return async function (dispatch: Dispatch) {
     log('[getPosts] attempting to fetch posts')
 
-    dispatch({ type: '@post/FETCHING_POSTS', payload: { lastId } })
+    dispatch({ type: POST_FETCHING, payload: { lastId } })
 
     try {
       const posts = await api.fetchPosts(lastId)
-      dispatch({ type: '@post/FETCHED_POSTS', payload: { posts } })
+      dispatch({ type: POST_FETCHED, payload: { posts } })
     } catch (e) {
-      dispatch({ type: '@post/FETCHING_POSTS_ERROR', payload: e })
+      dispatch({ type: POST_FETCH_ERR, payload: e })
     }
   }
 }
@@ -36,7 +39,6 @@ const initialState = {
   isWorking: false,
   posts: [],
   lastId: '0',
-  query: '',
   loadMoreThreshold: 4,
 }
 
@@ -46,11 +48,11 @@ export default function reducer (state: State = initialState, action: Action) {
   log('[reducer] processing payload')
 
   switch (type) {
-    case '@post/FETCHING_POSTS': {
+    case POST_FETCHING: {
       return { ...state, isWorking: true }
     }
 
-    case '@post/FETCHED_POSTS': {
+    case POST_FETCHED: {
       const { posts } = payload
       // Make sure any http link we get is transformed to an https link
       const formattedPosts = posts.map((post) => {
@@ -70,7 +72,7 @@ export default function reducer (state: State = initialState, action: Action) {
       }
     }
 
-    case '@post/FETCHING_POSTS_ERROR': {
+    case POST_FETCH_ERR: {
       // Make error message friendly
       const error = 'There was a problem while processing your request. Please try again.'
       return { ...state, isWorking: false, hasError: true, error }
