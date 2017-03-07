@@ -13,15 +13,10 @@ const logo = require('./../assets/logo.svg')
 type Props = {|
   error: ?string,
   onLoadMore: () => Promise<void>,
-  onSearch: (query: string, lastId: string) => Promise<void>,
-  onStartVideo: (video: Object) => Promise<void>,
-  onStopVideo: (video: Object) => Promise<void>,
-  onNavigate: (path: string) => Promise<void>,
   hasError: boolean,
   isWorking: boolean,
   posts: Array<PostType>,
-  loadMoreThreshold: number,
-  query: string,
+  loadMoreThreshold: number
 |}
 
 class PostView extends Component {
@@ -29,17 +24,12 @@ class PostView extends Component {
 
   render (): React.Element<any> {
     const {
-      onNavigate,
       onLoadMore,
-      onStartVideo,
-      onStopVideo,
-      onSearch,
       posts,
       loadMoreThreshold,
       isWorking,
       hasError,
-      error,
-      query,
+      error
     } = this.props
 
     const length = posts.length
@@ -57,12 +47,6 @@ class PostView extends Component {
           </a>
         </div>
         <div className={css(styles.wrapper)}>
-          {!hasError && query && (
-            <div className={css(styles.term)}>
-              Showing results for <strong>{query}</strong>
-            </div>
-          )}
-
           {hasError && (<span className={css(styles.error)}>{error}</span>)}
 
           {!hasError && !isWorking && posts.length === 0 && (
@@ -74,8 +58,6 @@ class PostView extends Component {
           {posts.map((post, i) => (
             <Post
               key={`post-${i}`}
-              onStartVideo={onStartVideo}
-              onStopVideo={onStopVideo}
               {...post}
             >
               {(length - loadMoreThreshold === i) && (

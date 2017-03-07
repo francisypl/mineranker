@@ -27,6 +27,14 @@
     "jsx": true                               // enable JSX
   },
 
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module",
+    "ecmaFeatures": {
+        "jsx": true
+    }
+  },
+
   "env": {
     "browser": true,     // browser global variables.
     "node": true,        // Node.js global variables and Node.js-specific rules.
@@ -49,7 +57,7 @@
   },
 
   "plugins": [
-    // e.g. "react" (must run `npm install eslint-plugin-react` first)
+    "react"
   ],
 
   "rules": {

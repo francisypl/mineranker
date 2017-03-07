@@ -14,7 +14,10 @@ class PostImage extends Component {
     const { photo } = this.props
     return (
       <div className={css(styles.container)}>
-        <img src={photo} className={css(styles.image)} />
+        <img
+            src={photo ? photo : require('./../assets/placeholder_image.svg')} 
+            className={css(styles.image)}
+        />
       </div>
     )
   }

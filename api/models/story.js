@@ -64,10 +64,12 @@ module.exports = {
 
     /**
      * Fetches all stories in the story collection.
+     * @param filter {Object} - kv on what documents to show
+     * @param options {Object} - kv on find options ex. sort, limit
      * @return {Promise}
      */
-    fetchAll() {
-        return db.getCollection().find().toArray()
+    fetchAll(filter, options) {
+        return db.getCollection().find(filter, options).toArray()
             .then(function(stories) {
                 return Promise.resolve(stories);
             });
