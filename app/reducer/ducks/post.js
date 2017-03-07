@@ -30,25 +30,6 @@ export function getPosts (lastId: string = '0', api: Api) {
   }
 }
 
-export function search (query: string, lastId: string, api: Api) {
-  return async function (dispatch: Dispatch) {
-    log('[search] attempting to search brand posts')
-
-    dispatch({ type: '@post/SEARCHING_POSTS', payload: { query, lastId } })
-
-    try {
-      const posts = await api.searchBrands(query, lastId)
-      dispatch({ type: '@post/SEARCHED_POSTS', payload: { posts } })
-    } catch (e) {
-      dispatch({ type: '@post/SEARCHING_POSTS_ERROR', payload: e })
-    }
-  }
-}
-
-export function clearSearch (): Action {
-  return { type: '@post/CLEAR_SEARCH', payload: {} }
-}
-
 const initialState = {
   hasError: false,
   error: undefined,
@@ -69,7 +50,6 @@ export default function reducer (state: State = initialState, action: Action) {
       return { ...state, isWorking: true }
     }
 
-    case '@post/SEARCHED_POSTS':
     case '@post/FETCHED_POSTS': {
       const { posts } = payload
       // Make sure any http link we get is transformed to an https link
@@ -90,20 +70,10 @@ export default function reducer (state: State = initialState, action: Action) {
       }
     }
 
-    case '@post/SEARCHING_POSTS_ERROR':
     case '@post/FETCHING_POSTS_ERROR': {
       // Make error message friendly
       const error = 'There was a problem while processing your request. Please try again.'
       return { ...state, isWorking: false, hasError: true, error }
-    }
-
-    case '@post/SEARCHING_POSTS': {
-      const { query, lastId } = payload
-      return { ...state, isWorking: true, lastId, query }
-    }
-
-    case '@post/CLEAR_SEARCH': {
-      return { ...state, isWorking: false, posts: [], lastId: '0', query: '' }
     }
 
     default: {

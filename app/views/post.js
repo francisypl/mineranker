@@ -13,9 +13,6 @@ const logo = require('./../assets/logo.svg')
 type Props = {|
   error: ?string,
   onLoadMore: () => Promise<void>,
-  onSearch: (query: string, lastId: string) => Promise<void>,
-  onStartVideo: (video: Object) => Promise<void>,
-  onStopVideo: (video: Object) => Promise<void>,
   onNavigate: (path: string) => Promise<void>,
   hasError: boolean,
   isWorking: boolean,
@@ -31,9 +28,6 @@ class PostView extends Component {
     const {
       onNavigate,
       onLoadMore,
-      onStartVideo,
-      onStopVideo,
-      onSearch,
       posts,
       loadMoreThreshold,
       isWorking,
@@ -74,8 +68,6 @@ class PostView extends Component {
           {posts.map((post, i) => (
             <Post
               key={`post-${i}`}
-              onStartVideo={onStartVideo}
-              onStopVideo={onStopVideo}
               {...post}
             >
               {(length - loadMoreThreshold === i) && (

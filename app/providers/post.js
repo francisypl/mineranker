@@ -7,8 +7,7 @@ import { push } from 'react-router-redux'
 import PostView from './../views/post'
 
 // grab any actions we need to perform
-import { getPosts, search, clearSearch } from './../reducer/ducks/post'
-import { startVideo, stopVideo } from './../reducer/ducks/video'
+import { getPosts } from './../reducer/ducks/post'
 
 // import any services we might need
 import * as api from './../services/api'
@@ -31,9 +30,6 @@ class PostProvider extends Component {
 
     // Bind functions
     this.onLoadMore = this.onLoadMore.bind(this)
-    this.onStartVideo = this.onStartVideo.bind(this)
-    this.onStopVideo = this.onStopVideo.bind(this)
-    this.onSearch = this.onSearch.bind(this)
     this.onNavigate = this.onNavigate.bind(this)
   }
 
@@ -69,36 +65,6 @@ class PostProvider extends Component {
       dispatch(search(query, lastId, api))
     } else {
       dispatch(getPosts(lastId, api))
-    }
-  }
-
-  onStartVideo (video) {
-    const { dispatch } = this.props
-    const { isPlaying, ref } = this.props.video
-
-    if (isPlaying) {
-      dispatch(stopVideo(ref))
-    }
-    dispatch(startVideo(video, this.isMobile))
-  }
-
-  onStopVideo (video) {
-    const { dispatch } = this.props
-
-    dispatch(stopVideo(video))
-  }
-
-  onSearch (query) {
-    const { dispatch } = this.props
-
-    // If we clear the search, show the global feed
-    if (query === '') {
-      dispatch(push('/'))
-      dispatch(getPosts('0', api))
-    } else {
-      dispatch(push(`/search/${query}`))
-      dispatch(clearSearch())
-      dispatch(search(query, '0', api))
     }
   }
 

@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { StyleSheet, css } from 'aphrodite'
 
-import PostVideo from './post-video'
 import PostImage from './post-image'
 
 class Post extends Component {
@@ -75,7 +74,7 @@ const styles = StyleSheet.create({
     display: 'block',
     fontSize: '14px',
   },
-  
+
   footer: {
     borderTop: '1px solid #999',
     margin: '0 10px',
