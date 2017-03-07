@@ -1,7 +1,29 @@
 const story = require('../models/story');
+const getObjectId = require('../lib/db/mongo').getObjectId;
+const _ = require('underscore');
 
 function getStories(req, res) {
-    story.fetchAll()
+    let options = {};
+    let filter = {};
+
+    if (_.has(req.query, 'limit')) {
+        options.limit = parseInt(req.query.limit);
+    }
+
+    if (_.has(req.query, 'offset')) {
+        let offsetId = getObjectId(req.query.offset);
+        if (offsetId) {
+            filter = {
+                _id: {
+                    '$lt': offsetId
+                }
+            };
+        }
+    }
+
+    options.sort = [['_id', 'desc']];
+
+    story.fetchAll(filter, options)
         .then(function(stories) {
             return res.json(200, stories);
         })
