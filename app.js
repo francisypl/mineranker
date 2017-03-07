@@ -18,6 +18,20 @@ app.use(
   }
 );
 
+app.get('/', restify.serveStatic({
+    directory: './build/mineranker',
+    default: 'index.html'
+}));
+
+app.get(/\/.*\..*/, restify.serveStatic({
+    directory: './build/mineranker',
+    default: 'index.html'
+}));
+
+// app.get(/\/mineranker\/.*\..*/, function() {
+//     console.log('sup');
+// });
+
 SwaggerRestify.create(config, function(err, swaggerRestify) {
     if (err) {
         throw err;

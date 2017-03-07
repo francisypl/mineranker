@@ -22,7 +22,7 @@ const devPlugins = [
 // base plugins
 const plugins = [
   // remove build/client dir before compile time
-  new CleanWebpackPlugin('build/adforprize'),
+  new CleanWebpackPlugin('build/mineranker'),
 
   // build vendor bundle (including common code chunks used in other bundles)
   new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.[hash].js'),
@@ -150,7 +150,7 @@ module.exports = {
   output: {
     chunkFilename: '[name].[hash].js',
     filename: '[name].[hash].js',
-    path: 'build/adforprize'
+    path: 'build/mineranker'
   },
 
   // load plugins
