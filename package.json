@@ -107,7 +107,7 @@
   "scripts": {
     "build": "npm run compile:app",
     "compile:app": "webpack -r dotenv/config --progress --profile --colors --display-error-details --display-cached",
-    "compile:app:watch": "webpack-dev-server -r dotenv/config --hot --inline --watch --progress --profile --colors --display-error-details --display-cached --content-base build/adforprize",
+    "compile:app:watch": "MINERANKER_API_URL=http://localhost:10010 webpack-dev-server -r dotenv/config --hot --inline --watch --progress --profile --colors --display-error-details --display-cached --content-base build/adforprize",
     "dev": "nodemon -w api --exec \"NODE_ENV=dev babel-node app.js --presets es2015,stage-0\"",
     "edit": "swagger project edit",
     "flow": "flow check",

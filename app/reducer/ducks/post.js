@@ -1,6 +1,7 @@
 /* @flow */
 
 import debug from 'debug'
+import _ from 'underscore'
 import type { Dispatch } from 'redux'
 
 const log = debug('reducer:ducks:post')
@@ -27,7 +28,8 @@ export function getPosts (lastId: string = '0', api: Api) {
     try {
       const posts = await api.fetchPosts(lastId)
       dispatch({ type: POST_FETCHED, payload: { posts } })
-    } catch (e) {
+    }
+    catch (e) {
       dispatch({ type: POST_FETCH_ERR, payload: e })
     }
   }
@@ -56,7 +58,10 @@ export default function reducer (state: State = initialState, action: Action) {
       const { posts } = payload
       // Make sure any http link we get is transformed to an https link
       const formattedPosts = posts.map((post) => {
-        const httpsUrl = post.og_image_url.replace(/^http:/, 'https:')
+        let httpsUrl = '';
+        if (_.has(post, 'og_image_url')) {
+          httpsUrl = post.og_image_url.replace(/^http:/, 'https:')
+        }
         return {
           ...post,
           og_image_url: httpsUrl,
