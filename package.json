@@ -105,8 +105,8 @@
     "build"
   ],
   "scripts": {
-    "start": "MINERANKER_API_URL=https://mineranker.herokuapp.com node app.js",
-    "build": "npm run compile:app",
+    "start": "NODE_ENV=production MINERANKER_API_URL=https://mineranker.herokuapp.com node app.js",
+    "build": "echo no_build",
     "compile:app": "webpack -r dotenv/config --progress --profile --colors --display-error-details --display-cached",
     "compile:app:watch": "MINERANKER_API_URL=http://localhost:10010 webpack-dev-server -r dotenv/config --hot --inline --watch --progress --profile --colors --display-error-details --display-cached --content-base build/mineranker",
     "dev": "nodemon -w api --exec \"NODE_ENV=dev babel-node app.js --presets es2015,stage-0\"",
