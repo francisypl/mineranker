@@ -105,9 +105,13 @@
     "build"
   ],
   "scripts": {
+<<<<<<< HEAD
+    "start": "NODE_ENV=production node app.js",
+=======
     "build": "npm run compile:app",
     "compile:app": "webpack -r dotenv/config --progress --profile --colors --display-error-details --display-cached",
     "compile:app:watch": "MINERANKER_API_URL=http://localhost:10010 webpack-dev-server -r dotenv/config --hot --inline --watch --progress --profile --colors --display-error-details --display-cached --content-base build/adforprize",
+>>>>>>> d7eaddcf3b3b1ecff909943f2005e799de2add1d
     "dev": "nodemon -w api --exec \"NODE_ENV=dev babel-node app.js --presets es2015,stage-0\"",
     "edit": "swagger project edit",
     "flow": "flow check",
@@ -115,8 +119,15 @@
     "postinstall": "npm run build",
     "start": "node app.js",
     "test": "swagger project test",
+<<<<<<< HEAD
+    "edit": "swagger project edit"
+  },
+  "engines": {
+    "node": "6.4.0"
+=======
     "test:app": "npm run flow && npm run lint:app && npm run test:unit",
     "test:unit": "jest",
     "test:unit:watch": "jest --watch"
+>>>>>>> d7eaddcf3b3b1ecff909943f2005e799de2add1d
   }
 }
