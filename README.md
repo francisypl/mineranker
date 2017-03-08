@@ -14,6 +14,8 @@ Mineranker is a web based application. Mineranker has a React/Redux web applicat
 ### Miner Architecture
 A Miner is free from any architectural restrictions. A miner can be built in any way shape or form, it just has to call the Application API to store enriched stories to the DB.
 
+Example: [HackerNews Miner](https://github.com/francisypl/hackernews_miner)
+
 ### Ranker Architecture
 The ranking will happen in the backend. Each user will have their own profile_config.json file. The profile_config.json file will contain a JSON representation of how the user want to ranker their stories. An example:
 
