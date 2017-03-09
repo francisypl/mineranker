@@ -1,4 +1,4 @@
-# minneranker
+# mineranker
 
 ## Description
 Mineranker is the easiest and most extensible open source news feed platform ever created. Users can subscribe to or build their own miners (news source) and choose their own ranking algorithm to determine in what order or what stories from those miners to display. And as mentioned, there are two components to Mineranker: miners and rankers. Miners aggregate and enrich stories to be added to the Mineranker database. Rankers filter and sort stories to be displayed on each user’s personal news feed.
@@ -13,6 +13,8 @@ Mineranker is a web based application. Mineranker has a React/Redux web applicat
 
 ### Miner Architecture
 A Miner is free from any architectural restrictions. A miner can be built in any way shape or form, it just has to call the Application API to store enriched stories to the DB.
+
+Example: [HackerNews Miner](https://github.com/francisypl/hackernews_miner)
 
 ### Ranker Architecture
 The ranking will happen in the backend. Each user will have their own profile_config.json file. The profile_config.json file will contain a JSON representation of how the user want to ranker their stories. An example:
