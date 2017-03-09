@@ -33,6 +33,7 @@ module.exports = {
      * @return {Object} if idStr is a valid id or {null}
      */
     getObjectId(idStr) {
+        // If it is a valid mongo object id
         if (ObjectID.isValid(idStr)) {
             return new ObjectID(idStr);
         }
