@@ -1,3 +1,5 @@
+Check out www.softwaredaily.com to see our implementation and deployment example.
+
 # mineranker
 
 Join our Slack: https://software-daily-slack.herokuapp.com/
