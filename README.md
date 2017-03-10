@@ -1,5 +1,7 @@
 # mineranker
 
+Join our Slack: https://software-daily-slack.herokuapp.com/
+
 ## Description
 Mineranker is the easiest and most extensible open source news feed platform ever created. Users can subscribe to or build their own miners (news source) and choose their own ranking algorithm to determine in what order or what stories from those miners to display. And as mentioned, there are two components to Mineranker: miners and rankers. Miners aggregate and enrich stories to be added to the Mineranker database. Rankers filter and sort stories to be displayed on each user’s personal news feed.
 
