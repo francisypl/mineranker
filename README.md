@@ -37,22 +37,22 @@ The ranking will happen in the backend. Each user will have their own profile_co
 
 ```json
 {
-	"user": {...},
+    "user": {...},
     "ranker": {
-    	"filter": [
-    		{
-    			"upvote": {
-    				"gte": 50
+        "filter": [
+            {
+                "upvote": {
+                    "gte": 50
                 }
             }
         ],
         "sort": [
-        	{
-        		"upvote": "asc"
+            {
+                "upvote": "asc"
             },
             {
-            	"description": {
-            	    "contains": "hello"
+                "description": {
+                    "contains": "hello"
                 }
             }
         ]
