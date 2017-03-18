@@ -16,7 +16,7 @@ The easiest place to get started is by tackling some of the issues on the issues
 - Download [MongoDb](https://docs.mongodb.com/getting-started/shell/installation/)
 - Install Swagger globally: `npm install -g swagger`
 - Run Mongo: `mongod`
-- Install Dependencies: `npm Install`
+- Install Dependencies: `npm install`
 - Run API: `npm run dev`
 - Run React App: `npm run compile:app:watch`
 - See Swagger Docs: `npm run edit`
