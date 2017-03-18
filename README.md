@@ -5,6 +5,18 @@ Mineranker is the easiest and most extensible open source news feed platform eve
 
 An example of a miner is the HackerNews miner: a HN miner can hit the HN API to get some skeleton data then it would enrich that data by scraping the url of the item and then put together a short summary of the article. This enriched story would then be added to the Mineranker database. An example of a ranker is the Upvote ranker: the upvote ranker can filter out anything that has less than 50 upvotes and sorts the stories by upvotes to display in descending order.
 
+## Getting Started
+The easiest place to get started is by tackling some of the issues on the issues tab. You can contribute with ideas or take on implementing a feature.
+
+#### Set Up Dev Env:
+- Download [MongoDb](https://docs.mongodb.com/getting-started/shell/installation/)
+- Install Swagger globally: `npm install -g swagger`
+- Run Mongo: `mongod`
+- Install Dependencies: `npm Install`
+- Run API: `npm run dev`
+- Run React App: `npm run compile:app:watch`
+- See Swagger Docs: `npm run edit`
+
 ## Architecture
 There are 3 major topics of architecture to be discussed: the Application Architecture, the Miner Architecture and the Ranker Architecture.
 
