@@ -93,7 +93,7 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
   /miners:
-    x-swagger-router-controller: miner
+    x-swagger-router-controller: miners
     get:
       description: Gets miners
       operationId: getMiners
@@ -135,20 +135,23 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+  /miners/{miner_id}:
+    x-swagger-router-controller: miners
     patch:
       description: To update description of a miner
       operationId: modifyMinerDescription
       parameters:
         - name: miner_id
-          in: query
+          required: true
+          in: path
+          type: string
           description: the id of the miner whose description is to be updated
+        - name: patchedMiner
+          in: body
+          description: the miner to be patched
           required: true
-          type: string
-        - name: description
-          in: query
-          description: the updated description of the miner
-          required: true
-          type: string
+          schema:
+            $ref: "#/definitions/Miner"
       responses:
         "200":
           description: Success
@@ -210,7 +213,6 @@ definitions:
   Miner:
     type: object
     required:
-      - _id
       - name
       - description
     properties:

@@ -26,6 +26,9 @@ module.exports = {
     getCollection() {
         return database.collection(config.get('db.default_collection'));
     },
+     getMinerCollection() {
+        return database.collection(config.get('db.miner_collection'));
+    },
 
     /**
      * Gets the Mongo Object Id with a id string.
