@@ -100,7 +100,7 @@ paths:
       parameters:
         - name: q
           in: query
-          description: name of part of the name of miner to fetch
+          description: name or part of the name of miner to fetch
           required: false
           type: string
       responses:
@@ -151,7 +151,12 @@ paths:
           description: the miner to be patched
           required: true
           schema:
-            $ref: "#/definitions/Miner"
+            type: object
+            properties:
+              description:
+                type: string
+            required:
+              - description
       responses:
         "200":
           description: Success

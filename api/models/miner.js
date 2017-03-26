@@ -4,18 +4,6 @@ const db = require('../lib/db/mongo');
 
 module.exports = {
     /**
-     * Make sure miners have useful info. Check url and og_image_url. Filed
-     * types are checked by the Swagger validator - don't need to check those.
-     * @param miners {Array} - the array of miners to be checked
-     * @return {Promise}
-     */
-    validateMiners(miners) {
-        // TODO: check to see if url and og_image_url (if exists) have content,
-        // if not then set those fields to null
-        return new Promise.resolve(null);
-    },
-
-    /**
      * Insert miners into the database
      * @param miners {Array} - to be insertedCount
      * @return {Promise}
@@ -68,19 +56,17 @@ module.exports = {
      * @param minerDescription {String} - new description of this miner
      * @return {Promise}
      */
-    updateDescription(minerId, minerDescription) {
-        let objectId = db.getObjectId(minerId);
+    updateDescription(pathchedMiner) {
+        let objectId = db.getObjectId(pathchedMiner._id);
 
         if (!objectId) {
             return Promise.reject('miner id is not a valid id string');
         }
-
-        return db.getMinerCollection().update({_id: objectId}, {description: minerDescription})
-            .then(function() {
-                return Promise.resolve(updatedMiner => {
-                    updatedMiner.description = minerDescription
-                    return updatedMiner;
-                });
+        console.log(pathchedMiner.description);
+        return db.getMinerCollection().update({_id: objectId}, pathchedMiner)
+            .then(function(updatedMiner) {
+                console.log(updatedMiner);
+                return Promise.resolve(updatedMiner);
             });
     }
 };
