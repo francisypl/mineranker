@@ -27,7 +27,10 @@ module.exports = {
         return database.collection(config.get('db.default_collection'));
     },
      getMinerCollection() {
-        return database.collection(config.get('db.miner_collection'));
+        var minerCollection = database.collection(config.get('db.miner_collection'));
+        minerCollection.createIndex({name:1}, {unique: true});
+
+        return minerCollection;
     },
 
     /**

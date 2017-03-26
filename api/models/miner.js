@@ -18,7 +18,7 @@ module.exports = {
     /**
      * Fetches a miner by its id.
      * @param minersId {String} - the string id
-     * @return Promise.<*> {Promise}
+     * @return {Promise}
      */
     fetchById(minersId) {
         let objId = db.getObjectId(minersId);
