@@ -1,20 +1,18 @@
 const miner = require('../models/miner');
-const getObjectId = require('../lib/db/mongo').getObjectId;
 const _ = require('underscore');
 
 function getMiners(req, res) {
     let options = {};
-    let filter = {};
+    let query = {};
 
-    // If there is a query param, else it is the default
+    // If there is a query param, else it is the empty
     if (_.has(req.query, 'q')) {
-        options.query = {name : "/.*" + req.query.q + ".*/"};
-
+        query = {name : req.query.q};
     }
 
     options.sort = [['_id', 'desc']];
 
-    miner.fetchAll(filter, options)
+    miner.fetchAll(query, options)
         .then(function(miners) {
             return res.json(200, miners);
         })

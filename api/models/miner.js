@@ -18,7 +18,7 @@ module.exports = {
     /**
      * Fetches a miner by its id.
      * @param minersId {String} - the string id
-     * @return return {Promise}
+     * @return Promise.<*> {Promise}
      */
     fetchById(minersId) {
         let objId = db.getObjectId(minersId);
@@ -39,12 +39,12 @@ module.exports = {
 
     /**
      * Fetches all miners in the miners collection.
-     * @param filter {Object} - kv on what documents to show
+     * @param query {Object} - kv on what documents to show
      * @param options {Object} - kv on find options ex. sort, limit
      * @return {Promise}
      */
-    fetchAll(filter, options) {
-        return db.getMinerCollection().find(filter, options).toArray()
+    fetchAll(query, options) {
+        return db.getMinerCollection().find(query, options).toArray()
             .then(function(miner) {
                 return Promise.resolve(miner);
             });
@@ -52,8 +52,7 @@ module.exports = {
 
     /**
      * Update miners' description.
-     * @param minerId {String} - the miner's string id
-     * @param minerDescription {String} - new description of this miner
+     * @param pathchedMiner {object} - the patched miner to be updated
      * @return {Promise}
      */
     updateDescription(pathchedMiner) {
@@ -62,10 +61,8 @@ module.exports = {
         if (!objectId) {
             return Promise.reject('miner id is not a valid id string');
         }
-        console.log(pathchedMiner.description);
         return db.getMinerCollection().update({_id: objectId}, pathchedMiner)
             .then(function(updatedMiner) {
-                console.log(updatedMiner);
                 return Promise.resolve(updatedMiner);
             });
     }
