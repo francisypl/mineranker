@@ -92,6 +92,81 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+  /miners:
+    x-swagger-router-controller: miners
+    get:
+      description: Gets miners
+      operationId: getMiners
+      parameters:
+        - name: q
+          in: query
+          description: name or part of the name of miner to fetch
+          required: false
+          type: string
+      responses:
+        "200": 
+          description: Succcess
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Miner"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    post:
+      description: Registers a new miner
+      operationId: registerNewMiners
+      parameters:
+        - name: newMiner
+          in: body
+          description: the new miner
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Miner"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/SuccessResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /miners/{miner_id}:
+    x-swagger-router-controller: miners
+    patch:
+      description: To update description of a miner
+      operationId: modifyMinerDescription
+      parameters:
+        - name: miner_id
+          required: true
+          in: path
+          type: string
+          description: the id of the miner whose description is to be updated
+        - name: patchedMiner
+          in: body
+          description: the miner to be patched
+          required: true
+          schema:
+            type: object
+            properties:
+              description:
+                type: string
+            required:
+              - description
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Miner"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    
   /swagger:
     x-swagger-pipe: swagger_raw
 # complex objects have schema definitions
@@ -140,3 +215,15 @@ definitions:
             type: integer
           downvote:
             type: integer
+  Miner:
+    type: object
+    required:
+      - name
+      - description
+    properties:
+      _id: 
+        type: string
+      name: 
+        type: string
+      description: 
+        type: string

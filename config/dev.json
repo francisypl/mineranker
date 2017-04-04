@@ -4,7 +4,8 @@
         "config": {
             "poolSize": 10
         },
-        "default_collection": "story"
+        "default_collection": "story",
+        "miner_collection": "miner"
     },
     "story": {
         "fetchLimit": 30
