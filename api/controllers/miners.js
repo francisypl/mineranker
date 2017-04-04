@@ -7,7 +7,7 @@ function getMiners(req, res) {
 
     // If there is a query param, else it is the empty
     if (_.has(req.query, 'q')) {
-        var queryRegex = new RegExp(req.query.q);
+        var queryRegex = new RegExp(req.query.q, 'i');
         query = { name : { $regex : queryRegex }};
     }
 
