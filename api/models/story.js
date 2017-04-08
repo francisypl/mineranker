@@ -43,17 +43,18 @@ module.exports = {
 
     /**
      * Fetches a story by its id.
+     * @param mienrId {String} - the id of the miner the story belongs to
      * @param storyId {String} - the string id
      * @return return {Promise}
      */
-    fetchById(storyId) {
+    fetchById(minerId, storyId) {
         let objId = db.getObjectId(storyId);
 
         if (!objId) {
             return Promise.reject('id string is not valid');
         }
 
-        return db.getCollection().find({_id: objId}).toArray()
+        return db.getMinerStoryCollection(minerId).find({_id: objId}).toArray()
             .then(function(fetchedStory) {
                 if (_.isEmpty(fetchedStory)) {
                     return Promise.reject('id is not found');
@@ -78,11 +79,12 @@ module.exports = {
 
     /**
      * Upvote or Downvote on a story.
+     * @param mienrId {String} - the id of the miner the story belongs to
      * @param storyId {String} - the story's string id
      * @param upvote {Boolean} - if true then upvote this story
      * @return {Promise}
      */
-    voteOnStory(storyId, upvote) {
+    voteOnStory(minerId, storyId, upvote) {
         let objectId = db.getObjectId(storyId);
         let voteObj = {
             $inc: null
@@ -103,7 +105,8 @@ module.exports = {
             };
         }
 
-        return db.getCollection().update({_id: objectId}, voteObj)
+        return db.getMinerStoryCollection(minerId)
+            .update({_id: objectId}, voteObj)
             .then(function() {
                 return Promise.resolve(updatedStory => {
                     if (upvote) {

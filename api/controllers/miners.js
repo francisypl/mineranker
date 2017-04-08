@@ -80,14 +80,23 @@ function insertNewStories(req, res) {
 }
 
 function voteOnStory(req, res) {
+    const story_id = req.swagger.params.story_id.value;
+    const miner_id = req.swagger.params.miner_id.value;
+
     let fetchedStory;
-    let {story_id, upvote} = req.query;
+    let {upvote} = req.query;
+    let resMiner;
+
     upvote = upvote.toLowerCase() === 'true';
 
-    story.fetchById(story_id)
+    miner.fetchById(miner_id)
+        .then(function(resultMiner) {
+            resMiner = resultMiner;
+            return story.fetchById(resultMiner._id, story_id);
+        })
         .then(function(resultStory) {
             fetchedStory = resultStory;
-            return story.voteOnStory(fetchedStory._id, upvote);
+            return story.voteOnStory(resMiner._id, fetchedStory._id, upvote);
         })
         .then(function(transformer) {
             return res.json(200, transformer(fetchedStory));
