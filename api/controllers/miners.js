@@ -1,4 +1,5 @@
 const miner = require('../models/miner');
+const story = require('../models/story');
 const _ = require('underscore');
 
 function getMiners(req, res) {
@@ -8,7 +9,7 @@ function getMiners(req, res) {
     // If there is a query param, else it is the empty
     if (_.has(req.query, 'q')) {
         var queryRegex = new RegExp(req.query.q, 'i');
-        query = { name : { $regex : queryRegex }};
+        query = {name : {$regex : queryRegex}};
     }
 
     options.sort = [['_id', 'desc']];
@@ -56,8 +57,51 @@ function modifyMinerDescription(req, res) {
         });
 }
 
+function insertNewStories(req, res) {
+    const stories = req.body;
+    const minerId = req.swagger.params.miner_id.value;
+    let resMiner;
+
+    miner.fetchById(minerId)
+        .then(function(resultMiner) {
+            resMiner = resultMiner;
+            return story.validateStories(stories);
+        })
+        .then(function() {
+            return story.insertStories(resMiner._id, stories);
+        })
+        .then(function(numInserted) {
+            return res.json(200, {message: `Inserted ${numInserted} stories`});
+        })
+        .catch(function(err) {
+            console.log(err);
+            return res.json(400, {message: 'Failed to insert stories'});
+        });
+}
+
+function voteOnStory(req, res) {
+    let fetchedStory;
+    let {story_id, upvote} = req.query;
+    upvote = upvote.toLowerCase() === 'true';
+
+    story.fetchById(story_id)
+        .then(function(resultStory) {
+            fetchedStory = resultStory;
+            return story.voteOnStory(fetchedStory._id, upvote);
+        })
+        .then(function(transformer) {
+            return res.json(200, transformer(fetchedStory));
+        })
+        .catch(function(err) {
+            console.log(err);
+            return res.json(400, {message: 'Failed to vote on story'});
+        });
+}
+
 module.exports = {
     getMiners,
     registerNewMiners,
-    modifyMinerDescription
+    modifyMinerDescription,
+    insertNewStories,
+    voteOnStory
 };

@@ -22,11 +22,13 @@ if (!database) {
 module.exports = {
     /**
      * Returns the default collection.
+     * @param minerId {String} - the id of the miner.
      */
-    getCollection() {
-        return database.collection(config.get('db.default_collection'));
+    getMinerStoryCollection(minerId) {
+        return database.collection(minerId);
     },
-     getMinerCollection() {
+
+    getMinerCollection() {
         var minerCollection = database.collection(config.get('db.miner_collection'));
         minerCollection.createIndex({name:1}, {unique: true});
 

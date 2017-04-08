@@ -29,12 +29,13 @@ module.exports = {
 
     /**
      * Insert Stories into the database
+     * @param minerId {String} - the id of the miner the new story belongs to
      * @param stories {Array} - stories to be insertedCount
      * @return {Promise}
      */
-    insertStories(stories) {
+    insertStories(minerId, stories) {
         let richStories = _.map(stories, enrichStory);
-        return db.getCollection().insertMany(richStories)
+        return db.getMinerStoryCollection(minerId).insertMany(richStories)
             .then(function(data) {
                 return Promise.resolve(data.insertedCount);
             });
