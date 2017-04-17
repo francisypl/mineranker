@@ -34,6 +34,22 @@ paths:
           description: the id of the last story retrieved
           required: false
           type: string
+        - name: miners
+          in: query
+          description: a list of registered miner ids to get data from
+          required: true
+          type: array
+          items:
+            type: string
+          collectionFormat: csv
+        - name: rankers
+          in: query
+          description: a list of registered ranker ids to rank miner data
+          required: true
+          type: array
+          items:
+            type: string
+          collectionFormat: csv
       responses:
         "200":
           description: Success
@@ -43,6 +59,47 @@ paths:
             items:
               $ref: "#/definitions/Story"
         # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /rankers:
+    x-swagger-router-controller: rankers
+    get:
+      description: Get registered rankers
+      operationId: getRankers
+      parameters:
+        - name: q
+          in: query
+          description: name or part of the name of ranker to fetch
+          required: false
+          type: string
+      responses:
+        "200": 
+          description: Success
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Ranker"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    post:
+      description: Register a new ranker
+      operationId: newRanker
+      parameters:
+        - name: newRanker
+          in: body
+          description: the new ranker
+          required: true
+          schema:
+            $ref: "#/definitions/Ranker"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/SuccessResponse"
         default:
           description: Error
           schema:
@@ -60,7 +117,7 @@ paths:
           type: string
       responses:
         "200": 
-          description: Succcess
+          description: Success
           schema:
             type: array
             items:
@@ -241,3 +298,18 @@ definitions:
         type: string
       description: 
         type: string
+  Ranker:
+    type: object
+    required:
+      - name
+      - filter
+      - sort
+    properties:
+      _id:
+        type: string
+      name:
+        type: string
+      filter:
+        type: object
+      sort:
+       type: object
