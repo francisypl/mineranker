@@ -2,18 +2,13 @@ const ranker = require('../models/rankers');
 const _ = require('underscore');
 
 function getRankers(req, res) {
-    let options = {};
-    let query = {};
-
+    var query = '';
     // If there is a query param, else it is the empty
     if (_.has(req.query, 'q')) {
-        var queryRegex = new RegExp(req.query.q, 'i');
-        query = {name : {$regex : queryRegex}};
+        query = req.query.q;
     }
 
-    options.sort = [['_id', 'desc']];
-
-    ranker.fetchAll(query, options)
+    ranker.fetchAll(query)
         .then(function(rankers) {
             return res.json(200, rankers);
         })

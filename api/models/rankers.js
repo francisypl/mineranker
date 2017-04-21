@@ -8,6 +8,10 @@ function formatRanker(ranker) {
 }
 
 module.exports = {
+    validateRanker(ranker) {
+
+    },
+
     /**
      * Register a single ranker.
      * @param ranker {Object} - ranker to be inserted
@@ -20,7 +24,22 @@ module.exports = {
             });
     },
 
-    fetchAll(query, options) {
+    /**
+     * Finds all ranker that matches query and options.
+     * @param q String - return a ranker if it contains this substring
+     * @return {Promise} - a list of rankers
+     */
+    fetchAll(q) {
+        var query = {};
+        var options = {};
+
+        if (q !== '') {
+            var queryRegex = new RegExp(q, 'i');
+            query = {name : {$regex : queryRegex}};
+        }
+
+        options.sort = [['_id', 'desc']];
+
         return db.getRankerCollection().find(query, options).toArray()
             .then(function(rankers) {
                 rankers = _.map(rankers, formatRanker);
