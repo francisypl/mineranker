@@ -28,10 +28,6 @@ app.get(/\/.*\..*/, restify.serveStatic({
     default: 'index.html'
 }));
 
-// app.get(/\/mineranker\/.*\..*/, function() {
-//     console.log('sup');
-// });
-
 SwaggerRestify.create(config, function(err, swaggerRestify) {
     if (err) {
         throw err;

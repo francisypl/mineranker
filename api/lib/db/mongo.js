@@ -35,6 +35,12 @@ module.exports = {
         return minerCollection;
     },
 
+    getRankerCollection() {
+        var rankerCollection = database.collection(config.get('db.ranker_collection'));
+        rankerCollection.createIndex({name:1}, {unique: true});
+        return rankerCollection;
+    },
+
     /**
      * Gets the Mongo Object Id with a id string.
      * @param idStr {String} - the id String

@@ -87,7 +87,7 @@ paths:
             $ref: "#/definitions/ErrorResponse"
     post:
       description: Register a new ranker
-      operationId: newRanker
+      operationId: registerNewRanker
       parameters:
         - name: newRanker
           in: body
