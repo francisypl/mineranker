@@ -58,7 +58,7 @@ function modifyMinerDescription(req, res) {
 }
 
 function insertNewStories(req, res) {
-    const stories = req.body;
+    let stories = req.body;
     const minerId = req.swagger.params.miner_id.value;
     let resMiner;
 
@@ -68,6 +68,11 @@ function insertNewStories(req, res) {
             return story.validateStories(stories);
         })
         .then(function() {
+            stories = _.map(stories, function(story) {
+                story.source = resMiner.name;
+                return story;
+            });
+
             return story.insertStories(resMiner._id, stories);
         })
         .then(function(numInserted) {
