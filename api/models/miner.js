@@ -35,7 +35,7 @@ module.exports = {
         return db.getMinerCollection().find({_id: objId}).toArray()
             .then(function(fetchedMiners) {
                 if (_.isEmpty(fetchedMiners)) {
-                    return Promise.reject('id is not found');
+                    return Promise.reject(`Miner ${minersId} is not found`);
                 }
 
                 return Promise.resolve(formatMiner(fetchedMiners[0]));

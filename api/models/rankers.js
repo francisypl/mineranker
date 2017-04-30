@@ -7,9 +7,47 @@ function formatRanker(ranker) {
     return ranker;
 }
 
-module.exports = {
-    validateRanker(ranker) {
+/**
+ * Evaluate a value against a condition object.
+ * @param condition - the condition object
+ * @param value - the value
+ * @return Boolean - true if the value satisfies the condition else false
+ */
+function evaluateValue(condition, value) {
+    
+}
 
+module.exports = {
+    isValidRanker(ranker) {
+        const sampleRanker = {
+            filter: {
+                a_key: {
+                    gt: 50
+                },
+                b_key: {
+                    gte: 50
+                },
+                c_key: {
+                    lt: 50
+                },
+                d_key: {
+                    lte: 50
+                },
+                e_key: {
+                    contains: 'some string'
+                },
+                f_key: {
+                    eq: 'asdf'
+                },
+                g_key: {
+                    eq: 100
+                }
+            },
+            sort: {
+                a_key: 'asc',
+                b_key: 'desc'
+            }
+        };
     },
 
     /**
@@ -21,6 +59,28 @@ module.exports = {
         return db.getRankerCollection().insertOne(ranker)
             .then(function(data) {
                 return Promise.resolve(data.insertedCount);
+            });
+    },
+
+    /**
+     * Fetches a ranker by its id.
+     * @param rankerId {String} - the string id
+     * @return {Promise}
+     */
+    fetchById(rankerId) {
+        let objId = db.getObjectId(rankerId);
+
+        if (!objId) {
+            return Promise.reject('id string is not valid');
+        }
+
+        return db.getRankerCollection().find({_id: objId}).toArray()
+            .then(function(fetchedRankers) {
+                if (_.isEmpty(fetchedRankers)) {
+                    return Promise.reject(`Ranker ${rankerId} is not found`);
+                }
+
+                return Promise.resolve(formatRanker(fetchedRankers[0]));
             });
     },
 
@@ -45,5 +105,72 @@ module.exports = {
                 rankers = _.map(rankers, formatRanker);
                 return Promise.resolve(rankers);
             });
+    },
+
+    /**
+     * Filter then sort stories based on the rankers.
+     * Filter Algorithm:
+     * - we match the filter object's keys to each story object's keys
+     * - if we don't find a key match, the story is kept
+     * - if we find a key match, and the condition passes, the story is kept
+     * - if we find a key match, and the condition fails, the story is disposed
+     *
+     * Sort Algorithm:
+     * - for now put the stories in random order
+     * TODO: how to sort?
+     *
+     * @param stories - a 2d array of stories
+     * @param rankers - an array of rankers
+     * @return an array of stories that
+     */
+    rankStories(stories, rankers) {
+        let storyList = _.flatten(stories);
+        let filters = _.map(rankers, ranker => ranker.filter);
+        let filterKeys = _.keys(filters);
+        // let sorts = _.map(rankers, ranker => ranker.sort);
+
+        let filteredStories = [];
+        _.each(storyList, story => {
+            let storyKeys = _.keys(story);
+            let extraKeys = [];
+            if (_.has(story, 'extra')) {
+                extraKeys = _.keys(story.extra);
+            }
+
+            let isPassing = true;
+
+            // If the story has all the of filter keys
+            let hasAllKeys = _.isEmpty(_.without(filterKeys, ...(storyKeys.concat(extraKeys))));
+            if (hasAllKeys) {
+                // for each filter key, evaluate the condition against the story's value
+                _.each(filterKeys, filterKey => {
+                    // if is the key is found on the story's first level
+                    if (_.contains(storyKeys, filterKey)) {
+                        let condition = filters[filterKey];
+                        let value = story[filterKey];
+                        // if one condition fails, we don't add the story
+                        if (!evaluateValue(condition, value)) {
+                            isPassing = false;
+                        }
+                    }
+                    // it is in story.extra
+                    else if (_.contains(extraKeys, filterKey)) {
+                        let condition = filters[filterKey];
+                        let value = story.extra[filterKey];
+                        // if one condition fails, we don't add the story
+                        if (!evaluateValue(condition, value)) {
+                            isPassing = false;
+                        }
+                    }
+                    else {
+                        console.log('/models/ranker.js: Should be unreachable');
+                    }
+                });
+            }
+
+            if (isPassing) {
+                filteredStories.push(story);
+            }
+        });
     }
 };

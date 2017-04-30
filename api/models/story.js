@@ -66,14 +66,94 @@ module.exports = {
 
     /**
      * Fetches all stories in the story collection.
-     * @param filter {Object} - kv on what documents to show
-     * @param options {Object} - kv on find options ex. sort, limit
+     * @param miners - a list of miner ids to fetch stories from
+     * @param rankers - a list of ranker ids to rank stories with
+     * @param offsetId - the id of the last item fetched
+     * @param limit - the number of stories to return
      * @return {Promise}
      */
-    fetchAll(filter, options) {
+    fetchAll(miners, rankers, offsetId, limit) {
+        const sampleRanker = {
+            filter: {
+                a_key: {
+                    gt: 50
+                },
+                b_key: {
+                    gte: 50
+                },
+                c_key: {
+                    lt: 50
+                },
+                d_key: {
+                    lte: 50
+                },
+                e_key: {
+                    contains: 'some string'
+                },
+                f_key: {
+                    eq: 'asdf'
+                },
+                g_key: {
+                    eq: 100
+                }
+            },
+            sort: {
+                a_key: 'asc',
+                b_key: 'desc'
+            }
+        };
+
+        let filter = {};
+        let options = {};
+
+        if (!_.isNull(offsetId) && !_.isUndefined(offsetId)) {
+            filter = {
+                _id: {
+                    '$lt': offsetId
+                }
+            };
+        }
+
+        options.limit = limit;
+        options.sort = [['_id', 'desc']];
+
         return db.getCollection().find(filter, options).toArray()
             .then(function(stories) {
                 return Promise.resolve(stories);
+            });
+    },
+
+    /**
+     * Fetch stories from a miner.
+     * @param minerId - a valid id of the miner
+     * @param offsetId - id of the last story, this will get stories after this
+     * @param limit - the number of stories to return
+     * @return a promise of stories
+     */
+    fetchMinerStories(minerId, offsetId = null, limit = 30) {
+        let objectId = db.getObjectId(minerId);
+        if (_.isNull(objectId)) {
+            return Promise.reject(`Miner ${minerId} id is not valid`);
+        }
+
+        let filter = {};
+        let options = {};
+
+        if (!_.isNull(offsetId) && !_.isUndefined(offsetId) &&
+            !_.isNull(db.getObjectId(offsetId))) {
+            filter = {
+                _id: {
+                    '$lt': offsetId
+                }
+            };
+        }
+
+        options.limit = limit;
+        options.sort = [['_id', 'desc']];
+
+        return db.getMinerStoryCollection(minerId).find(filter, options)
+            .toArray().then(function(result) {
+                return Promise.resolve(result);
             });
     },
 
