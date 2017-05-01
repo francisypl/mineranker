@@ -123,4 +123,37 @@ describe('ranker model', () => {
 
         return done();
     });
+
+    it('operationFns eq should return the right values', done => {
+        const runOperator = rankers._helperFns.runOperator;
+
+        // contains: Number
+        expect(runOperator('eq', 1, 1)).to.be.true;
+        expect(runOperator('eq', 123, 123)).to.be.true;
+        expect(runOperator('eq', -123, -123)).to.be.true;
+        expect(runOperator('eq', 123, -123)).to.be.false;
+        expect(runOperator('eq', 123, 0)).to.be.false;
+        expect(runOperator('eq', 0, 0)).to.be.true;
+
+        // contains: String
+        expect(runOperator('eq', 'hello world', 'world')).to.be.false;
+        expect(runOperator('eq', 'hello world', 'foo')).to.be.false;
+        expect(runOperator('eq', 'hello world', '')).to.be.false;
+        expect(runOperator('eq', '', '')).to.be.true;
+        expect(runOperator('eq', 'hello world', 'hello world')).to.be.true;
+        expect(runOperator('eq', 'hello world', 'HELLO WORLD')).to.be.false;
+
+        // contains:Boolean
+        expect(runOperator('eq', true, true)).to.be.true;
+        expect(runOperator('eq', true, false)).to.be.false;
+        expect(runOperator('eq', false, true)).to.be.false;
+        expect(runOperator('eq', false, false)).to.be.true;
+
+        // contains: Object
+        expect(runOperator('eq', {foo: 100}, {foo: 100})).to.be.true;
+        expect(runOperator('eq', {foo: 100}, {})).to.be.false;
+        expect(runOperator('eq', {foo: [1,2,3]}, {foo: [1,2,3]})).to.be.true;
+
+        return done();
+    });
 });
