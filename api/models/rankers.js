@@ -209,3 +209,7 @@ module.exports = {
         });
     }
 };
+module.exports._helperFns = {
+    runOperator,
+    evaluateValue
+};
