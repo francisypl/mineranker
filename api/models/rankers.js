@@ -7,6 +7,28 @@ function formatRanker(ranker) {
     return ranker;
 }
 
+function runOperator(operator, value, conditionVal) {
+    const operatorFns = {
+        gt: (val1, val2) => val1 > val2,
+        gte: (val1, val2) => val1 >= val2,
+        lt: (val1, val2) => val1 < val2,
+        lte: (val1, val2) => val1 <= val2,
+        number_contains: (val1, val2) => false,
+        string_contains: (val1, val2) => val1.includes(val2),
+        boolean_contains: (val1, val2) => false,
+        object_contains: (val1,val2) => _.contains(_.keys(val1), val2),
+        eq: (val1, val2) => _.isEqual(val1, val2)
+    };
+
+    let typedOperator = (typeof value).toLowerCase() + '_' + operator;
+    if (_.has(operatorFns, typedOperator)) {
+        return operatorFns[typedOperator](value, conditionVal);
+    }
+    else {
+        return operatorFns[operator](value, conditionVal);
+    }
+}
+
 /**
  * Evaluate a value against a condition object.
  * @param condition - the condition object
@@ -14,7 +36,20 @@ function formatRanker(ranker) {
  * @return Boolean - true if the value satisfies the condition else false
  */
 function evaluateValue(condition, value) {
-    
+    const conditions = _.keys(condition);
+    const validConditions = ['gt', 'gte', 'lt', 'lte', 'contains', 'eq'];
+
+    let isPassing = true;
+
+    _.each(validConditions, function(validCondition) {
+        if (isPassing && _.contains(conditions, validCondition)) {
+            let conditionVal = condition.gt;
+            isPassing = typeof compareVal === typeof value &&
+                        runOperator(validCondition, value, conditionVal);
+        }
+    });
+
+    return isPassing;
 }
 
 module.exports = {
