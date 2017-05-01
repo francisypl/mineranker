@@ -7,14 +7,34 @@ function formatRanker(ranker) {
     return ranker;
 }
 
+/**
+ * Runs the operator agains the condition's vaule and the actual value.
+ * @param operator String - a string to indicate the operation eg. "gt", "lt"
+ * @param value Any - the actual value to be compared
+ * @param compareVal Any - the value to be compared against
+ * @return boolean
+ */
 function runOperator(operator, value, conditionVal) {
     const operatorFns = {
         gt: (val1, val2) => val1 > val2,
+        object_gt: (val1, val2) => false,
         gte: (val1, val2) => val1 >= val2,
+        object_gte: (val1, val2) => false,
         lt: (val1, val2) => val1 < val2,
+        object_lt: (val1, val2) => false,
         lte: (val1, val2) => val1 <= val2,
+        object_lte: (val1, val2) => false,
         number_contains: (val1, val2) => false,
-        string_contains: (val1, val2) => val1.includes(val2),
+        string_contains: (val1, val2) => {
+            if (val1 === '' && val2 === '') {
+                return true;
+            }
+            else if (val1 === '' || val2 === '') {
+                return false;
+            }
+
+            return val1.includes(val2);
+        },
         boolean_contains: (val1, val2) => false,
         object_contains: (val1,val2) => _.contains(_.keys(val1), val2),
         eq: (val1, val2) => _.isEqual(val1, val2)
@@ -43,9 +63,17 @@ function evaluateValue(condition, value) {
 
     _.each(validConditions, function(validCondition) {
         if (isPassing && _.contains(conditions, validCondition)) {
-            let conditionVal = condition.gt;
-            isPassing = typeof compareVal === typeof value &&
-                        runOperator(validCondition, value, conditionVal);
+            let conditionVal = condition[validCondition];
+
+            if (typeof compareVal === typeof value) {
+                isPassing = runOperator(validCondition, value, conditionVal);
+            }
+            else if (validCondition === 'contains' && (_.isObject(value) || _.isString(conditionVal))) {
+                isPassing = runOperator(validCondition, value, conditionVal);
+            }
+            else {
+                isPassing = false;
+            }
         }
     });
 
