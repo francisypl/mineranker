@@ -161,12 +161,81 @@ describe('ranker model', () => {
     it('evaluateValue gt should return the right values', done => {
         const evaluateValue = rankers._helperFns.evaluateValue;
 
-        // gt
         const gtSuccessCondition = {gt: 3};
         const gtFailCondition = {gt: 10};
         const gtValue = 5;
         expect(evaluateValue(gtSuccessCondition, gtValue)).to.be.true;
         expect(evaluateValue(gtFailCondition, gtValue)).to.be.false;
+
+        return done();
+    });
+
+    it('evaluateValue gte should return the right values', done => {
+        const evaluateValue = rankers._helperFns.evaluateValue;
+
+        const gteSuccessCondition = {gte: 3};
+        const gteSuccessCondition2 = {gte: 2};
+        const gteFailCondition = {gte: 10};
+        const gteValue = 3;
+        expect(evaluateValue(gteSuccessCondition, gteValue)).to.be.true;
+        expect(evaluateValue(gteSuccessCondition2, gteValue)).to.be.true;
+        expect(evaluateValue(gteFailCondition, gteValue)).to.be.false;
+
+        return done();
+    });
+
+    it('evaluateValue lt should return the right values', done => {
+        const evaluateValue = rankers._helperFns.evaluateValue;
+
+        const ltSuccessCondition = {lt: 10};
+        const ltFailCondition = {lt: 3};
+        const ltValue = 5;
+        expect(evaluateValue(ltSuccessCondition, ltValue)).to.be.true;
+        expect(evaluateValue(ltFailCondition, ltValue)).to.be.false;
+
+        return done();
+    });
+
+    it('evaluateValue lte should return the right values', done => {
+        const evaluateValue = rankers._helperFns.evaluateValue;
+
+        const lteSuccessCondition = {lte: 3};
+        const lteSuccessCondition2 = {lte: 10};
+        const lteFailCondition = {lte: 2};
+        const lteValue = 3;
+        expect(evaluateValue(lteSuccessCondition, lteValue)).to.be.true;
+        expect(evaluateValue(lteSuccessCondition2, lteValue)).to.be.true;
+        expect(evaluateValue(lteFailCondition, lteValue)).to.be.false;
+
+        return done();
+    });
+
+    it('evaluateValue contains should return the right values', done => {
+        const evaluateValue = rankers._helperFns.evaluateValue;
+
+        const containsSuccessCondition = {contains: 'hello'};
+        const containsFailConition = {contains: 'belo'};
+        const containsVal = 'hello world';
+        expect(evaluateValue(containsSuccessCondition, containsVal)).to.be.true;
+        expect(evaluateValue(containsFailConition, containsVal)).to.be.false;
+
+        const objContainsSuccessCondition = {contains: 'hello'};
+        const objContainsFailConition = {contains: 'belo'};
+        const objContainsVal = {hello: 'world'};
+        expect(evaluateValue(objContainsSuccessCondition, objContainsVal)).to.be.true;
+        expect(evaluateValue(objContainsFailConition, objContainsVal)).to.be.false;
+
+        return done();
+    });
+
+    it('evaluateValue eq should return the right values', done => {
+        const evaluateValue = rankers._helperFns.evaluateValue;
+
+        const eqSuccessCondition = {eq: 3};
+        const eqFailCondition = {eq: 4};
+        const eqValue = 3;
+        expect(evaluateValue(eqSuccessCondition, eqValue)).to.be.true;
+        expect(evaluateValue(eqFailCondition, eqValue)).to.be.false;
 
         return done();
     });

@@ -11,7 +11,7 @@ function formatRanker(ranker) {
  * Runs the operator agains the condition's vaule and the actual value.
  * @param value Any - the actual value to be compared
  * @param operator String - a string to indicate the operation eg. "gt", "lt"
- * @param compareVal Any - the value to be compared against
+ * @param conditionVal Any - the value to be compared against
  * @return boolean
  * eg. parameters read like: <value> must be <operator> <conditionalVal>
  *                               4   must be    gt        2
