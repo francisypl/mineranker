@@ -9,12 +9,14 @@ function formatRanker(ranker) {
 
 /**
  * Runs the operator agains the condition's vaule and the actual value.
- * @param operator String - a string to indicate the operation eg. "gt", "lt"
  * @param value Any - the actual value to be compared
+ * @param operator String - a string to indicate the operation eg. "gt", "lt"
  * @param compareVal Any - the value to be compared against
  * @return boolean
+ * eg. parameters read like: <value> must be <operator> <conditionalVal>
+ *                               4   must be    gt        2
  */
-function runOperator(operator, value, conditionVal) {
+function runOperator(value, operator, conditionVal) {
     const operatorFns = {
         gt: (val1, val2) => val1 > val2,
         object_gt: (val1, val2) => false,
@@ -66,10 +68,10 @@ function evaluateValue(condition, value) {
             let conditionVal = condition[validCondition];
 
             if (typeof compareVal === typeof value) {
-                isPassing = runOperator(validCondition, value, conditionVal);
+                isPassing = runOperator(value, validCondition, conditionVal);
             }
             else if (validCondition === 'contains' && (_.isObject(value) || _.isString(conditionVal))) {
-                isPassing = runOperator(validCondition, value, conditionVal);
+                isPassing = runOperator(value, validCondition, conditionVal);
             }
             else {
                 isPassing = false;
@@ -207,26 +209,24 @@ module.exports = {
             if (hasAllKeys) {
                 // for each filter key, evaluate the condition against the story's value
                 _.each(filterKeys, filterKey => {
-                    // if is the key is found on the story's first level
-                    if (_.contains(storyKeys, filterKey)) {
-                        let condition = filters[filterKey];
-                        let value = story[filterKey];
-                        // if one condition fails, we don't add the story
-                        if (!evaluateValue(condition, value)) {
-                            isPassing = false;
+                    if (isPassing) {
+                        // if is the key is found on the story's first level
+                        if (_.contains(storyKeys, filterKey)) {
+                            let condition = filters[filterKey];
+                            let value = story[filterKey];
+                            // if one condition fails, we don't add the story
+                            isPassing = evaluateValue(condition, value);
                         }
-                    }
-                    // it is in story.extra
-                    else if (_.contains(extraKeys, filterKey)) {
-                        let condition = filters[filterKey];
-                        let value = story.extra[filterKey];
-                        // if one condition fails, we don't add the story
-                        if (!evaluateValue(condition, value)) {
-                            isPassing = false;
+                        // it is in story.extra
+                        else if (_.contains(extraKeys, filterKey)) {
+                            let condition = filters[filterKey];
+                            let value = story.extra[filterKey];
+                            // if one condition fails, we don't add the story
+                            isPassing = evaluateValue(condition, value);
                         }
-                    }
-                    else {
-                        console.log('/models/ranker.js: Should be unreachable');
+                        else {
+                            console.log('/models/ranker.js: Should be unreachable');
+                        }
                     }
                 });
             }
