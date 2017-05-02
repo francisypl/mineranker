@@ -1,7 +1,7 @@
 const expect = require('chai').expect;
 const rankers = require('../../../api/models/rankers');
 
-describe('ranker model', () => {
+describe('ranking helper methods', () => {
     it('runOperator gt should return the right values', done => {
         const runOperator = rankers._helperFns.runOperator;
 
@@ -236,6 +236,117 @@ describe('ranker model', () => {
         const eqValue = 3;
         expect(evaluateValue(eqSuccessCondition, eqValue)).to.be.true;
         expect(evaluateValue(eqFailCondition, eqValue)).to.be.false;
+
+        return done();
+    });
+
+    it('joinObjects should return the right values', done => {
+        const joinObjects = rankers._helperFns.joinObjects;
+
+        const data = [
+            {
+                downvote: {
+                    gt: 10
+                },
+                upvote: {
+                    lt: 100
+                }
+            },
+            {
+                downvote: {
+                    gt: 20
+                },
+                title: {
+                    contains: 'cool'
+                }
+            }
+        ];
+
+        expect(joinObjects(data)).to.deep.equal({
+            downvote: {
+                gt: 20
+            },
+            upvote: {
+                lt: 100
+            },
+            title: {
+                contains: 'cool'
+            }
+        });
+
+        return done();
+    });
+});
+
+describe('rankStories tests', () => {
+    const stories = [[{
+        // currency stories
+        '_id' : '590123b9a47700769b5a9a63',
+        'title' : 'USD to AUD : 1 to 1.3365',
+        'url' : 'http://www.xe.com/currencyconverter/convert/?Amount=1&From=USD&To=AUD',
+        'extra' : {
+            'AUD' : 1.3365
+        },
+        'source' : 'Exchange Rate Miner',
+        'upvote' : 3,
+        'downvote' : 4
+    },
+    {
+        '_id' : '590123b9a47700769b5a9a64',
+        'title' : 'USD to BGN : 1 to 1.7955',
+        'url' : 'http://www.xe.com/currencyconverter/convert/?Amount=1&From=USD&To=BGN',
+        'extra' : {
+            'BGN' : 1.7955
+        },
+        'source' : 'Exchange Rate Miner',
+        'upvote' : 2,
+        'downvote' : 10
+    },
+    {
+        '_id' : '590123b9a47700769b5a9a65',
+        'title' : 'USD to BRL : 1 to 3.1691',
+        'url' : 'http://www.xe.com/currencyconverter/convert/?Amount=1&From=USD&To=BRL',
+        'extra' : {
+            'BRL' : 3.1691
+        },
+        'source' : 'Exchange Rate Miner',
+        'upvote' : 1,
+        'downvote' : 6
+    }],
+    // hacker news stories
+    [{
+        '_id' : '5900d6bd0b9c9157e66e5f5a',
+        'source' : 'hacker-news',
+        'title' : 'Mylan’s EpiPen price hike was a scheme to stifle competition, rival claims',
+        'url' : 'https://arstechnica.com/science/2017/04/lawsuit-mylans-epic-epipen-price-hike-wasnt-about-greed-its-worse/',
+        'og_image_url' : 'https://cdn.arstechnica.net/wp-content/uploads/2017/04/GettyImages-609574212-760x380.jpg',
+        'description' : 'Front page layoutSite themeSign up or login to join the discussions!According to the lawsuit:',
+        'upvote' : 0,
+        'downvote' : 0
+    },
+    {
+        '_id' : '5900d6bd0b9c9157e66e5f5e',
+        'source' : 'hacker-news',
+        'title' : 'Banks should let COBOL die',
+        'url' : 'https://thenextweb.com/finance/2017/04/25/banks-should-let-ancient-programming-language-cobol-die/',
+        'og_image_url' : 'https://cdn0.tnwcdn.com/wp-content/blogs.dir/1/files/2017/04/1cbd7a2d21b6a46a5561f507ea58e444.jpg',
+        'description' : '\n                            TNW uses cookies to personalize content and ads to\n                            make our site easier for you to use.\n                            We do also share that information with third parties for\n                            advertising &amp; analytics.\n                        ',
+        'upvote' : 3,
+        'downvote' : 10
+    }]];
+
+    it('rankStories gt should return the right values', done => {
+        const rankersArr = [{
+            filter: {
+                downvote: {
+                    gt: 5
+                }
+            },
+            sort: {}
+        }];
+        const res = rankers.rankStories(stories, rankersArr);
+
+        expect(res.length).to.equal(3);
 
         return done();
     });

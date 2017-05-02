@@ -52,6 +52,23 @@ function runOperator(value, operator, conditionVal) {
 }
 
 /**
+ * Join an array of objects together to form one object.
+ * @param objArr [Array] - an array of object_contains
+ * @return a single object
+ */
+function joinObjects(objArr) {
+    let retObj = {};
+
+    _.each(objArr, obj => {
+        _.each(_.keys(obj), key => {
+            retObj[key] = obj[key];
+        });
+    });
+
+    return retObj;
+}
+
+/**
  * Evaluate a value against a condition object.
  * @param condition - the condition object
  * @param value - the value
@@ -180,6 +197,8 @@ module.exports = {
      * - if we find a key match, and the condition passes, the story is kept
      * - if we find a key match, and the condition fails, the story is disposed
      *
+     * - if rankers have repeating keys, the algorithm will take the latest one
+     *
      * Sort Algorithm:
      * - for now put the stories in random order
      * TODO: how to sort?
@@ -190,7 +209,7 @@ module.exports = {
      */
     rankStories(stories, rankers) {
         let storyList = _.flatten(stories);
-        let filters = _.map(rankers, ranker => ranker.filter);
+        let filters = joinObjects(_.map(rankers, ranker => ranker.filter));
         let filterKeys = _.keys(filters);
         // let sorts = _.map(rankers, ranker => ranker.sort);
 
@@ -235,9 +254,12 @@ module.exports = {
                 filteredStories.push(story);
             }
         });
+
+        return filteredStories;
     }
 };
 module.exports._helperFns = {
     runOperator,
-    evaluateValue
+    evaluateValue,
+    joinObjects
 };
