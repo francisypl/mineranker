@@ -67,7 +67,7 @@ function evaluateValue(condition, value) {
         if (isPassing && _.contains(conditions, validCondition)) {
             let conditionVal = condition[validCondition];
 
-            if (typeof compareVal === typeof value) {
+            if (typeof conditionVal === typeof value) {
                 isPassing = runOperator(value, validCondition, conditionVal);
             }
             else if (validCondition === 'contains' && (_.isObject(value) || _.isString(conditionVal))) {
