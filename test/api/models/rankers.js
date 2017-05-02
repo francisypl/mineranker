@@ -350,4 +350,100 @@ describe('rankStories tests', () => {
 
         return done();
     });
+
+    it('rankStories gte should return the right values', done => {
+        const rankersArr = [{
+            filter: {
+                upvote: {
+                    gte: 3
+                }
+            },
+            sort: {}
+        }];
+        const res = rankers.rankStories(stories, rankersArr);
+
+        expect(res.length).to.equal(2);
+
+        return done();
+    });
+
+    it('rankStories lt should return the right values', done => {
+        const rankersArr = [{
+            filter: {
+                downvote: {
+                    lt: 5
+                }
+            },
+            sort: {}
+        }];
+        const res = rankers.rankStories(stories, rankersArr);
+
+        expect(res.length).to.equal(2);
+
+        return done();
+    });
+
+    it('rankStories lte should return the right values', done => {
+        const rankersArr = [{
+            filter: {
+                upvote: {
+                    lte: 3
+                }
+            },
+            sort: {}
+        }];
+        const res = rankers.rankStories(stories, rankersArr);
+
+        expect(res.length).to.equal(5);
+
+        return done();
+    });
+
+    it('rankStories contains should return the right values', done => {
+        const rankersArr = [{
+            filter: {
+                source: {
+                    contains: 'Exchange'
+                }
+            },
+            sort: {}
+        }];
+        const res = rankers.rankStories(stories, rankersArr);
+
+        expect(res.length).to.equal(3);
+
+        return done();
+    });
+
+    it('rankStories contains2 should return the right values', done => {
+        const rankersArr = [{
+            filter: {
+                source: {
+                    contains: 'hacker'
+                }
+            },
+            sort: {}
+        }];
+        const res = rankers.rankStories(stories, rankersArr);
+
+        expect(res.length).to.equal(2);
+
+        return done();
+    });
+
+    it('rankStories eq should return the right values', done => {
+        const rankersArr = [{
+            filter: {
+                upvote: {
+                    eq: 3
+                }
+            },
+            sort: {}
+        }];
+        const res = rankers.rankStories(stories, rankersArr);
+
+        expect(res.length).to.equal(2);
+
+        return done();
+    });
 });
