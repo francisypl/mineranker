@@ -446,4 +446,81 @@ describe('rankStories tests', () => {
 
         return done();
     });
+
+    it('rankStories should return the right values when some stories dont have keys', done => {
+        const rankersArr = [{
+            filter: {
+                extra: {
+                    contains: 'BRL'
+                }
+            },
+            sort: {}
+        }];
+        const res = rankers.rankStories(stories, rankersArr);
+
+        expect(res.length).to.equal(3);
+
+        return done();
+    });
+
+    it('rankStories should return the right values with two filters', done => {
+        const rankersArr = [{
+            filter: {
+                upvote: {
+                    eq: 3
+                },
+                extra: {
+                    contains: 'AUD'
+                }
+            },
+            sort: {}
+        }];
+        const res = rankers.rankStories(stories, rankersArr);
+
+        expect(res.length).to.equal(3);
+
+        return done();
+    });
+
+    it('rankStories should return the right values with two filters', done => {
+        const rankersArr = [{
+            filter: {
+                upvote: {
+                    eq: 3
+                },
+                extra: {
+                    contains: 'AUD'
+                }
+            },
+            sort: {}
+        }];
+        const res = rankers.rankStories(stories, rankersArr);
+
+        expect(res.length).to.equal(3);
+
+        return done();
+    });
+
+    it('rankStories should return the right values with two ranker filters', done => {
+        const rankersArr = [{
+            filter: {
+                upvote: {
+                    gt: 2
+                }
+            },
+            sort: {}
+        },
+        {
+            filter: {
+                extra: {
+                    contains: 'AUD'
+                }
+            }
+        }];
+        const res = rankers.rankStories(stories, rankersArr);
+
+        expect(res.length).to.equal(2);
+
+        return done();
+    });
 });

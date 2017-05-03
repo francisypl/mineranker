@@ -197,8 +197,6 @@ module.exports = {
      * - if we find a key match, and the condition passes, the story is kept
      * - if we find a key match, and the condition fails, the story is disposed
      *
-     * - if rankers have repeating keys, the algorithm will take the latest one
-     *
      * Sort Algorithm:
      * - for now put the stories in random order
      * TODO: how to sort?
@@ -209,46 +207,49 @@ module.exports = {
      */
     rankStories(stories, rankers) {
         let storyList = _.flatten(stories);
-        let filters = joinObjects(_.map(rankers, ranker => ranker.filter));
-        let filterKeys = _.keys(filters);
+        let allFilters = _.map(rankers, ranker => ranker.filter);
         // let sorts = _.map(rankers, ranker => ranker.sort);
 
         let filteredStories = [];
         _.each(storyList, story => {
-            let storyKeys = _.keys(story);
-            let extraKeys = [];
-            if (_.has(story, 'extra')) {
-                extraKeys = _.keys(story.extra);
-            }
-
             let isPassing = true;
 
-            // If the story has all the of filter keys
-            let hasAllKeys = _.isEmpty(_.without(filterKeys, ...(storyKeys.concat(extraKeys))));
-            if (hasAllKeys) {
-                // for each filter key, evaluate the condition against the story's value
-                _.each(filterKeys, filterKey => {
-                    if (isPassing) {
-                        // if is the key is found on the story's first level
-                        if (_.contains(storyKeys, filterKey)) {
-                            let condition = filters[filterKey];
-                            let value = story[filterKey];
-                            // if one condition fails, we don't add the story
-                            isPassing = evaluateValue(condition, value);
+            _.each(allFilters, filters => {
+                let filterKeys = _.keys(filters);
+
+                let storyKeys = _.keys(story);
+                let extraKeys = [];
+                if (_.has(story, 'extra')) {
+                    extraKeys = _.keys(story.extra);
+                }
+
+                // If the story has all the of filter keys
+                let hasAllKeys = _.isEmpty(_.without(filterKeys, ...(storyKeys.concat(extraKeys))));
+                if (hasAllKeys) {
+                    // for each filter key, evaluate the condition against the story's value
+                    _.each(filterKeys, filterKey => {
+                        if (isPassing) {
+                            // if is the key is found on the story's first level
+                            if (_.contains(storyKeys, filterKey)) {
+                                let condition = filters[filterKey];
+                                let value = story[filterKey];
+                                // if one condition fails, we don't add the story
+                                isPassing = evaluateValue(condition, value);
+                            }
+                            // it is in story.extra
+                            else if (_.contains(extraKeys, filterKey)) {
+                                let condition = filters[filterKey];
+                                let value = story.extra[filterKey];
+                                // if one condition fails, we don't add the story
+                                isPassing = evaluateValue(condition, value);
+                            }
+                            else {
+                                console.log('/models/ranker.js: Should be unreachable');
+                            }
                         }
-                        // it is in story.extra
-                        else if (_.contains(extraKeys, filterKey)) {
-                            let condition = filters[filterKey];
-                            let value = story.extra[filterKey];
-                            // if one condition fails, we don't add the story
-                            isPassing = evaluateValue(condition, value);
-                        }
-                        else {
-                            console.log('/models/ranker.js: Should be unreachable');
-                        }
-                    }
-                });
-            }
+                    });
+                }
+            });
 
             if (isPassing) {
                 filteredStories.push(story);
