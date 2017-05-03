@@ -100,38 +100,6 @@ function evaluateValue(condition, value) {
 }
 
 module.exports = {
-    isValidRanker(ranker) {
-        const sampleRanker = {
-            filter: {
-                a_key: {
-                    gt: 50
-                },
-                b_key: {
-                    gte: 50
-                },
-                c_key: {
-                    lt: 50
-                },
-                d_key: {
-                    lte: 50
-                },
-                e_key: {
-                    contains: 'some string'
-                },
-                f_key: {
-                    eq: 'asdf'
-                },
-                g_key: {
-                    eq: 100
-                }
-            },
-            sort: {
-                a_key: 'asc',
-                b_key: 'desc'
-            }
-        };
-    },
-
     /**
      * Register a single ranker.
      * @param ranker {Object} - ranker to be inserted
