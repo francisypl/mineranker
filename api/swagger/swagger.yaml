@@ -50,6 +50,11 @@ paths:
           items:
             type: string
           collectionFormat: csv
+        - name: pagination
+          description: a base64 encoded JSON objecet mapping miners to their last returned story's id. The pagination string given in the response of this request.
+          in: query
+          required: false
+          type: string
       responses:
         "200":
           description: Success

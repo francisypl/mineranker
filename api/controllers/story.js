@@ -9,6 +9,11 @@ function getStories(req, res) {
     let miners = _.filter(req.query.miners.split(','), val => val !== '');
     let rankers = _.filter(req.query.rankers.split(','), val => val !== '');
 
+    let pagination = req.query.pagination;
+    if (!_.isNull(pagination) && !_.isUndefined(pagination)) {
+        pagination = ranker.base64StrToObject(pagination);
+    }
+
     if (_.isEmpty(miners)) {
         return res.json(400, {message: 'No miners are selected'});
     }
@@ -40,6 +45,10 @@ function getStories(req, res) {
             richRankers = result;
             // Get stories from the miners
             return Promise.all(_.map(richMiners, miner => {
+                if (!_.isNull(pagination) && _.has(pagination, miner._id)) {
+                    return story.fetchMinerStories(miner._id, pagination[miner._id]);
+                }
+
                 return story.fetchMinerStories(miner._id);
             }));
         })

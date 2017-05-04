@@ -15,7 +15,7 @@ function formatRanker(ranker) {
 }
 
 function tobase64Str(obj) {
-    return (new Buffer(JSON.stringify(obj))).toString('base64');
+    return (new Buffer(obj)).toString('base64');
 }
 
 class StoriesIterator {
@@ -65,8 +65,15 @@ class StoriesIterator {
             if (lastVisitedStoryIndex < 0) {
                 lastVisitedStoryIndex = 0;
             }
-
-            pageObj[id] = this.stories[index][id][lastVisitedStoryIndex]._id;
+            let lastStory = this.stories[index][id][lastVisitedStoryIndex];
+            if (!_.isNull(lastStory) && !_.isUndefined(lastStory)) {
+                pageObj[id] = lastStory._id;
+            }
+            // if we reached the last element, we keep the pagination on the
+            // last element to avoid starting over
+            else {
+                pageObj[id] = this.stories[index][id][lastVisitedStoryIndex - 1];
+            }
         });
 
         return pageObj;
@@ -172,6 +179,22 @@ module.exports = {
      */
     setDb(newdb) {
         db = newdb;
+    },
+
+    /**
+     * Converts a base64 string to a JSON object
+     */
+    base64StrToObject(strVal) {
+        let retObj;
+
+        try {
+            retObj = JSON.parse((new Buffer(strVal, 'base64').toString('ascii')));
+        }
+        catch(e) {
+            retObj = null;
+        }
+
+        return retObj;
     },
 
     /**

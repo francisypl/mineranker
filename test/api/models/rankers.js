@@ -450,10 +450,6 @@ describe('rankStories tests', () => {
         const {stories, page} = rankers.rankStories(testStories, rankersArr, 30);
 
         expect(stories.length).to.equal(3);
-        expect(page).to.equal(rankers._helperFns.tobase64Str(JSON.stringify({
-            '5900fbc638675e6d72747b45': '590123b9a47700769b5a9a65',
-            '5900d2cf0b9c9157e66e5f56': '5900d6bd0b9c9157e66e5f5e'
-        })));
 
         return done();
     });

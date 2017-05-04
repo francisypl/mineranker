@@ -84,7 +84,7 @@ module.exports = {
             !_.isNull(db.getObjectId(offsetId))) {
             filter = {
                 _id: {
-                    '$lt': offsetId
+                    '$lt': db.getObjectId(offsetId)
                 }
             };
         }
