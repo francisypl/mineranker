@@ -1,5 +1,6 @@
 const expect = require('chai').expect;
 const rankers = require('../../../api/models/rankers');
+rankers.setDb({});
 
 describe('ranking helper methods', () => {
     it('runOperator gt should return the right values', done => {
@@ -276,64 +277,166 @@ describe('ranking helper methods', () => {
 
         return done();
     });
+
+    it('StoriesIterator allVisited should return the right values', done => {
+        let sIterator = new rankers._helperFns.StoriesIterator([
+            {'a': [1,2,3]},
+            {'b': [4,5,6]},
+            {'c': [7,8,9]}
+        ]);
+
+        expect(sIterator.allVisited()).to.be.false;
+
+        sIterator = new rankers._helperFns.StoriesIterator([]);
+
+        expect(sIterator.allVisited()).to.be.true;
+
+        return done();
+    });
+
+    it('StoriesIterator getNextStory should return the right values', done => {
+        let sIterator = new rankers._helperFns.StoriesIterator([
+            {'a': [{_id: '1'}, {_id: '2'}, {_id: '3'}]},
+            {'b': [{_id: '4'}, {_id: '5'}, {_id: '6'}]},
+            {'c': [{_id: '7'}, {_id: '8'}, {_id: '9'}]}
+        ]);
+
+        expect(sIterator.getNextStory()).to.deep.equal({_id: '1'});
+        expect(sIterator.allVisited()).to.be.false;
+        expect(sIterator.getNextStory()).to.deep.equal({_id: '4'});
+        expect(sIterator.allVisited()).to.be.false;
+        expect(sIterator.getNextStory()).to.deep.equal({_id: '7'});
+        expect(sIterator.allVisited()).to.be.false;
+        expect(sIterator.getNextStory()).to.deep.equal({_id: '2'});
+        expect(sIterator.allVisited()).to.be.false;
+        expect(sIterator.getNextStory()).to.deep.equal({_id: '5'});
+        expect(sIterator.allVisited()).to.be.false;
+        expect(sIterator.getNextStory()).to.deep.equal({_id: '8'});
+        expect(sIterator.allVisited()).to.be.false;
+        expect(sIterator.getNextStory()).to.deep.equal({_id: '3'});
+        expect(sIterator.allVisited()).to.be.false;
+        expect(sIterator.getNextStory()).to.deep.equal({_id: '6'});
+        expect(sIterator.allVisited()).to.be.false;
+        expect(sIterator.getNextStory()).to.deep.equal({_id: '9'});
+        expect(sIterator.allVisited()).to.be.true;
+        expect(sIterator.getNextStory()).to.be.null;
+        expect(sIterator.getNextStory()).to.be.null;
+        expect(sIterator.getNextStory()).to.be.null;
+        expect(sIterator.allVisited()).to.be.true;
+
+        return done();
+    });
+
+    it('StoriesIterator getNextStory should return the right values', done => {
+        let sIterator = new rankers._helperFns.StoriesIterator([
+            {'a': [{_id: '1'}, {_id: '2'}, {_id: '3'}]},
+            {'b': [{_id: '4'}, {_id: '5'}, {_id: '6'}]},
+            {'c': [{_id: '7'}, {_id: '8'}, {_id: '9'}]}
+        ]);
+
+        expect(sIterator.getNextStory()).to.deep.equal({_id: '1'});
+        expect(sIterator.allVisited()).to.be.false;
+        expect(sIterator.getNextStory()).to.deep.equal({_id: '4'});
+        expect(sIterator.allVisited()).to.be.false;
+        expect(sIterator.getNextStory()).to.deep.equal({_id: '7'});
+        expect(sIterator.allVisited()).to.be.false;
+        expect(sIterator.getNextStory()).to.deep.equal({_id: '2'});
+        expect(sIterator.allVisited()).to.be.false;
+
+        expect(sIterator.getPaginationObject()).to.deep.equal({
+            'a': '2',
+            'b': '4',
+            'c': '7'
+        });
+
+        expect(sIterator.getNextStory()).to.deep.equal({_id: '5'});
+        expect(sIterator.allVisited()).to.be.false;
+        expect(sIterator.getNextStory()).to.deep.equal({_id: '8'});
+        expect(sIterator.allVisited()).to.be.false;
+        expect(sIterator.getNextStory()).to.deep.equal({_id: '3'});
+        expect(sIterator.allVisited()).to.be.false;
+        expect(sIterator.getNextStory()).to.deep.equal({_id: '6'});
+        expect(sIterator.allVisited()).to.be.false;
+        expect(sIterator.getNextStory()).to.deep.equal({_id: '9'});
+        expect(sIterator.allVisited()).to.be.true;
+        expect(sIterator.getNextStory()).to.be.null;
+
+        expect(sIterator.getPaginationObject()).to.deep.equal({
+            'a': '3',
+            'b': '6',
+            'c': '9'
+        });
+
+        return done();
+    });
 });
 
 describe('rankStories tests', () => {
-    const stories = [[{
-        // currency stories
-        '_id' : '590123b9a47700769b5a9a63',
-        'title' : 'USD to AUD : 1 to 1.3365',
-        'url' : 'http://www.xe.com/currencyconverter/convert/?Amount=1&From=USD&To=AUD',
-        'extra' : {
-            'AUD' : 1.3365
+    const testStories = [
+        {
+            '5900fbc638675e6d72747b45':[
+                {
+                    // currency stories
+                    '_id' : '590123b9a47700769b5a9a63',
+                    'title' : 'USD to AUD : 1 to 1.3365',
+                    'url' : 'http://www.xe.com/currencyconverter/convert/?Amount=1&From=USD&To=AUD',
+                    'extra' : {
+                        'AUD' : 1.3365
+                    },
+                    'source' : 'Exchange Rate Miner',
+                    'upvote' : 3,
+                    'downvote' : 4
+                },
+                {
+                    '_id' : '590123b9a47700769b5a9a64',
+                    'title' : 'USD to BGN : 1 to 1.7955',
+                    'url' : 'http://www.xe.com/currencyconverter/convert/?Amount=1&From=USD&To=BGN',
+                    'extra' : {
+                        'BGN' : 1.7955
+                    },
+                    'source' : 'Exchange Rate Miner',
+                    'upvote' : 2,
+                    'downvote' : 10
+                },
+                {
+                    '_id' : '590123b9a47700769b5a9a65',
+                    'title' : 'USD to BRL : 1 to 3.1691',
+                    'url' : 'http://www.xe.com/currencyconverter/convert/?Amount=1&From=USD&To=BRL',
+                    'extra' : {
+                        'BRL' : 3.1691
+                    },
+                    'source' : 'Exchange Rate Miner',
+                    'upvote' : 1,
+                    'downvote' : 6
+                }
+            ]
         },
-        'source' : 'Exchange Rate Miner',
-        'upvote' : 3,
-        'downvote' : 4
-    },
-    {
-        '_id' : '590123b9a47700769b5a9a64',
-        'title' : 'USD to BGN : 1 to 1.7955',
-        'url' : 'http://www.xe.com/currencyconverter/convert/?Amount=1&From=USD&To=BGN',
-        'extra' : {
-            'BGN' : 1.7955
-        },
-        'source' : 'Exchange Rate Miner',
-        'upvote' : 2,
-        'downvote' : 10
-    },
-    {
-        '_id' : '590123b9a47700769b5a9a65',
-        'title' : 'USD to BRL : 1 to 3.1691',
-        'url' : 'http://www.xe.com/currencyconverter/convert/?Amount=1&From=USD&To=BRL',
-        'extra' : {
-            'BRL' : 3.1691
-        },
-        'source' : 'Exchange Rate Miner',
-        'upvote' : 1,
-        'downvote' : 6
-    }],
     // hacker news stories
-    [{
-        '_id' : '5900d6bd0b9c9157e66e5f5a',
-        'source' : 'hacker-news',
-        'title' : 'Mylan’s EpiPen price hike was a scheme to stifle competition, rival claims',
-        'url' : 'https://arstechnica.com/science/2017/04/lawsuit-mylans-epic-epipen-price-hike-wasnt-about-greed-its-worse/',
-        'og_image_url' : 'https://cdn.arstechnica.net/wp-content/uploads/2017/04/GettyImages-609574212-760x380.jpg',
-        'description' : 'Front page layoutSite themeSign up or login to join the discussions!According to the lawsuit:',
-        'upvote' : 0,
-        'downvote' : 0
-    },
-    {
-        '_id' : '5900d6bd0b9c9157e66e5f5e',
-        'source' : 'hacker-news',
-        'title' : 'Banks should let COBOL die',
-        'url' : 'https://thenextweb.com/finance/2017/04/25/banks-should-let-ancient-programming-language-cobol-die/',
-        'og_image_url' : 'https://cdn0.tnwcdn.com/wp-content/blogs.dir/1/files/2017/04/1cbd7a2d21b6a46a5561f507ea58e444.jpg',
-        'description' : '\n                            TNW uses cookies to personalize content and ads to\n                            make our site easier for you to use.\n                            We do also share that information with third parties for\n                            advertising &amp; analytics.\n                        ',
-        'upvote' : 3,
-        'downvote' : 10
-    }]];
+        {
+            '5900d2cf0b9c9157e66e5f56': [
+                {
+                    '_id' : '5900d6bd0b9c9157e66e5f5a',
+                    'source' : 'hacker-news',
+                    'title' : 'Mylan’s EpiPen price hike was a scheme to stifle competition, rival claims',
+                    'url' : 'https://arstechnica.com/science/2017/04/lawsuit-mylans-epic-epipen-price-hike-wasnt-about-greed-its-worse/',
+                    'og_image_url' : 'https://cdn.arstechnica.net/wp-content/uploads/2017/04/GettyImages-609574212-760x380.jpg',
+                    'description' : 'Front page layoutSite themeSign up or login to join the discussions!According to the lawsuit:',
+                    'upvote' : 0,
+                    'downvote' : 0
+                },
+                {
+                    '_id' : '5900d6bd0b9c9157e66e5f5e',
+                    'source' : 'hacker-news',
+                    'title' : 'Banks should let COBOL die',
+                    'url' : 'https://thenextweb.com/finance/2017/04/25/banks-should-let-ancient-programming-language-cobol-die/',
+                    'og_image_url' : 'https://cdn0.tnwcdn.com/wp-content/blogs.dir/1/files/2017/04/1cbd7a2d21b6a46a5561f507ea58e444.jpg',
+                    'description' : '\n                            TNW uses cookies to personalize content and ads to\n                            make our site easier for you to use.\n                            We do also share that information with third parties for\n                            advertising &amp; analytics.\n                        ',
+                    'upvote' : 3,
+                    'downvote' : 10
+                }
+            ]
+        }
+    ];
 
     it('rankStories gt should return the right values', done => {
         const rankersArr = [{
@@ -344,9 +447,13 @@ describe('rankStories tests', () => {
             },
             sort: {}
         }];
-        const res = rankers.rankStories(stories, rankersArr);
+        const {stories, page} = rankers.rankStories(testStories, rankersArr, 30);
 
-        expect(res.length).to.equal(3);
+        expect(stories.length).to.equal(3);
+        expect(page).to.equal(rankers._helperFns.tobase64Str(JSON.stringify({
+            '5900fbc638675e6d72747b45': '590123b9a47700769b5a9a65',
+            '5900d2cf0b9c9157e66e5f56': '5900d6bd0b9c9157e66e5f5e'
+        })));
 
         return done();
     });
@@ -360,9 +467,9 @@ describe('rankStories tests', () => {
             },
             sort: {}
         }];
-        const res = rankers.rankStories(stories, rankersArr);
+        const {stories, page} = rankers.rankStories(testStories, rankersArr, 30);
 
-        expect(res.length).to.equal(2);
+        expect(stories.length).to.equal(2);
 
         return done();
     });
@@ -376,9 +483,9 @@ describe('rankStories tests', () => {
             },
             sort: {}
         }];
-        const res = rankers.rankStories(stories, rankersArr);
+        const {stories, page} = rankers.rankStories(testStories, rankersArr, 30);
 
-        expect(res.length).to.equal(2);
+        expect(stories.length).to.equal(2);
 
         return done();
     });
@@ -392,9 +499,9 @@ describe('rankStories tests', () => {
             },
             sort: {}
         }];
-        const res = rankers.rankStories(stories, rankersArr);
+        const {stories, page} = rankers.rankStories(testStories, rankersArr, 30);
 
-        expect(res.length).to.equal(5);
+        expect(stories.length).to.equal(5);
 
         return done();
     });
@@ -408,9 +515,9 @@ describe('rankStories tests', () => {
             },
             sort: {}
         }];
-        const res = rankers.rankStories(stories, rankersArr);
+        const {stories, page} = rankers.rankStories(testStories, rankersArr, 30);
 
-        expect(res.length).to.equal(3);
+        expect(stories.length).to.equal(3);
 
         return done();
     });
@@ -424,9 +531,9 @@ describe('rankStories tests', () => {
             },
             sort: {}
         }];
-        const res = rankers.rankStories(stories, rankersArr);
+        const {stories, page} = rankers.rankStories(testStories, rankersArr, 30);
 
-        expect(res.length).to.equal(2);
+        expect(stories.length).to.equal(2);
 
         return done();
     });
@@ -440,9 +547,9 @@ describe('rankStories tests', () => {
             },
             sort: {}
         }];
-        const res = rankers.rankStories(stories, rankersArr);
+        const {stories, page} = rankers.rankStories(testStories, rankersArr, 30);
 
-        expect(res.length).to.equal(2);
+        expect(stories.length).to.equal(2);
 
         return done();
     });
@@ -456,28 +563,9 @@ describe('rankStories tests', () => {
             },
             sort: {}
         }];
-        const res = rankers.rankStories(stories, rankersArr);
+        const {stories, page} = rankers.rankStories(testStories, rankersArr, 30);
 
-        expect(res.length).to.equal(3);
-
-        return done();
-    });
-
-    it('rankStories should return the right values with two filters', done => {
-        const rankersArr = [{
-            filter: {
-                upvote: {
-                    eq: 3
-                },
-                extra: {
-                    contains: 'AUD'
-                }
-            },
-            sort: {}
-        }];
-        const res = rankers.rankStories(stories, rankersArr);
-
-        expect(res.length).to.equal(3);
+        expect(stories.length).to.equal(3);
 
         return done();
     });
@@ -494,9 +582,28 @@ describe('rankStories tests', () => {
             },
             sort: {}
         }];
-        const res = rankers.rankStories(stories, rankersArr);
+        const {stories, page} = rankers.rankStories(testStories, rankersArr, 30);
 
-        expect(res.length).to.equal(3);
+        expect(stories.length).to.equal(3);
+
+        return done();
+    });
+
+    it('rankStories should return the right values with two filters', done => {
+        const rankersArr = [{
+            filter: {
+                upvote: {
+                    eq: 3
+                },
+                extra: {
+                    contains: 'AUD'
+                }
+            },
+            sort: {}
+        }];
+        const {stories, page} = rankers.rankStories(testStories, rankersArr, 30);
+
+        expect(stories.length).to.equal(3);
 
         return done();
     });
@@ -517,9 +624,9 @@ describe('rankStories tests', () => {
                 }
             }
         }];
-        const res = rankers.rankStories(stories, rankersArr);
+        const {stories, page} = rankers.rankStories(testStories, rankersArr, 30);
 
-        expect(res.length).to.equal(2);
+        expect(stories.length).to.equal(2);
 
         return done();
     });

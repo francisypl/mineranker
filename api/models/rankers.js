@@ -1,10 +1,76 @@
 const Promise = require('bluebird');
-const db = require('../lib/db/mongo');
+let db = null;
 const _ = require('underscore');
+
+/**
+ * Initialize the database to the mongo database.
+ */
+function initDb() {
+    db = require('../lib/db/mongo');
+}
 
 function formatRanker(ranker) {
     ranker._id = String(ranker._id);
     return ranker;
+}
+
+function tobase64Str(obj) {
+    return (new Buffer(JSON.stringify(obj))).toString('base64');
+}
+
+class StoriesIterator {
+    constructor(stories) {
+        this.stories = stories;
+        this.numStories = _.reduce(stories, (memo, storyObjArr) => memo + _.values(_.values(storyObjArr)[0]).length, 0);
+        this.visitedIndex = {};
+        this.minerIds = _.map(stories, story => _.keys(story)[0]);
+        _.each(this.minerIds, minerId => {
+            this.visitedIndex[minerId] = 0;
+        });
+        this.visit = 0;
+    }
+
+    allVisited() {
+        let visited = _.reduce(_.values(this.visitedIndex), (memo, num) => memo + num, 0);
+        return visited >= this.numStories;
+    }
+
+    getNextStory() {
+        let minerId = this.minerIds[this.visit];
+        let storiesArr = this.stories[this.visit][minerId];
+
+        // If all stories are visited
+        if (this.allVisited()) {
+            return null;
+        }
+
+        while (this.visitedIndex[minerId] === storiesArr.length) {
+            this.visit = (this.visit + 1) % this.minerIds.length;
+            minerId = this.minerIds[this.visit];
+            storiesArr = this.stories[this.visit][minerId];
+        }
+
+        let getIndex = this.visitedIndex[minerId]++;
+
+        this.visit = (this.visit + 1) % this.minerIds.length;
+
+        return storiesArr[getIndex];
+    }
+
+    getPaginationObject() {
+        let pageObj = {};
+
+        _.each(this.minerIds, (id, index) => {
+            let lastVisitedStoryIndex = this.visitedIndex[id] - 1;
+            if (lastVisitedStoryIndex < 0) {
+                lastVisitedStoryIndex = 0;
+            }
+
+            pageObj[id] = this.stories[index][id][lastVisitedStoryIndex]._id;
+        });
+
+        return pageObj;
+    }
 }
 
 /**
@@ -101,11 +167,23 @@ function evaluateValue(condition, value) {
 
 module.exports = {
     /**
+     * Set a new database for dependency injection.
+     * @param newdb - a new database to use
+     */
+    setDb(newdb) {
+        db = newdb;
+    },
+
+    /**
      * Register a single ranker.
      * @param ranker {Object} - ranker to be inserted
      * @return {Promise}
      */
     registerRanker(ranker) {
+        if (_.isNull(db)) {
+            initDb();
+        }
+
         return db.getRankerCollection().insertOne(ranker)
             .then(function(data) {
                 return Promise.resolve(data.insertedCount);
@@ -118,6 +196,10 @@ module.exports = {
      * @return {Promise}
      */
     fetchById(rankerId) {
+        if (_.isNull(db)) {
+            initDb();
+        }
+
         let objId = db.getObjectId(rankerId);
 
         if (!objId) {
@@ -140,6 +222,10 @@ module.exports = {
      * @return {Promise} - a list of rankers
      */
     fetchAll(q) {
+        if (_.isNull(db)) {
+            initDb();
+        }
+
         var query = {};
         var options = {};
 
@@ -169,17 +255,20 @@ module.exports = {
      * - for now put the stories in random order
      * TODO: how to sort?
      *
-     * @param stories - a 2d array of stories
-     * @param rankers - an array of rankers
-     * @return an array of stories that
+     * @param stories - a array of stories object [{<miner_id>: [storylist]}, ...]
+     * @param rankers - an array of rankers [{filter:{<filter_obj>}, sort:{<sort_obj>}}, ...]
+     * @return {stories: [story1, story2, ...], page: <base64 encoded pagination obj str>}
      */
-    rankStories(stories, rankers) {
-        let storyList = _.flatten(stories);
+    rankStories(stories, rankers, limit) {
+        // Initialize the story iterator
+        const storyIterator = new StoriesIterator(stories);
+
         let allFilters = _.map(rankers, ranker => ranker.filter);
         // let sorts = _.map(rankers, ranker => ranker.sort);
 
         let filteredStories = [];
-        _.each(storyList, story => {
+        while (filteredStories.length < limit && !storyIterator.allVisited()) {
+            let story = storyIterator.getNextStory();
             let isPassing = true;
 
             _.each(allFilters, filters => {
@@ -222,13 +311,18 @@ module.exports = {
             if (isPassing) {
                 filteredStories.push(story);
             }
-        });
+        }
 
-        return filteredStories;
+        return {
+            stories: _.shuffle(filteredStories),
+            page: tobase64Str(JSON.stringify(storyIterator.getPaginationObject()))
+        };
     }
 };
 module.exports._helperFns = {
     runOperator,
     evaluateValue,
-    joinObjects
+    joinObjects,
+    StoriesIterator,
+    tobase64Str
 };
