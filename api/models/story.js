@@ -29,12 +29,13 @@ module.exports = {
 
     /**
      * Insert Stories into the database
+     * @param minerId {String} - the id of the miner the new story belongs to
      * @param stories {Array} - stories to be insertedCount
      * @return {Promise}
      */
-    insertStories(stories) {
+    insertStories(minerId, stories) {
         let richStories = _.map(stories, enrichStory);
-        return db.getCollection().insertMany(richStories)
+        return db.getMinerStoryCollection(minerId).insertMany(richStories)
             .then(function(data) {
                 return Promise.resolve(data.insertedCount);
             });
@@ -42,17 +43,18 @@ module.exports = {
 
     /**
      * Fetches a story by its id.
+     * @param mienrId {String} - the id of the miner the story belongs to
      * @param storyId {String} - the string id
      * @return return {Promise}
      */
-    fetchById(storyId) {
+    fetchById(minerId, storyId) {
         let objId = db.getObjectId(storyId);
 
         if (!objId) {
             return Promise.reject('id string is not valid');
         }
 
-        return db.getCollection().find({_id: objId}).toArray()
+        return db.getMinerStoryCollection(minerId).find({_id: objId}).toArray()
             .then(function(fetchedStory) {
                 if (_.isEmpty(fetchedStory)) {
                     return Promise.reject('id is not found');
@@ -63,25 +65,49 @@ module.exports = {
     },
 
     /**
-     * Fetches all stories in the story collection.
-     * @param filter {Object} - kv on what documents to show
-     * @param options {Object} - kv on find options ex. sort, limit
-     * @return {Promise}
+     * Fetch stories from a miner.
+     * @param minerId - a valid id of the miner
+     * @param offsetId - id of the last story, this will get stories after this
+     * @param limit - the number of stories to return
+     * @return a promise of stories
      */
-    fetchAll(filter, options) {
-        return db.getCollection().find(filter, options).toArray()
-            .then(function(stories) {
-                return Promise.resolve(stories);
+    fetchMinerStories(minerId, offsetId = null, limit = null) {
+        let objectId = db.getObjectId(minerId);
+        if (_.isNull(objectId)) {
+            return Promise.reject(`Miner ${minerId} id is not valid`);
+        }
+
+        let filter = {};
+        let options = {};
+
+        if (!_.isNull(offsetId) && !_.isUndefined(offsetId) &&
+            !_.isNull(db.getObjectId(offsetId))) {
+            filter = {
+                _id: {
+                    '$lt': offsetId
+                }
+            };
+        }
+
+        if (!_.isNull(limit)) {
+            options.limit = limit;
+        }
+        options.sort = [['_id', 'desc']];
+
+        return db.getMinerStoryCollection(minerId).find(filter, options)
+            .toArray().then(function(result) {
+                return Promise.resolve(result);
             });
     },
 
     /**
      * Upvote or Downvote on a story.
+     * @param mienrId {String} - the id of the miner the story belongs to
      * @param storyId {String} - the story's string id
      * @param upvote {Boolean} - if true then upvote this story
      * @return {Promise}
      */
-    voteOnStory(storyId, upvote) {
+    voteOnStory(minerId, storyId, upvote) {
         let objectId = db.getObjectId(storyId);
         let voteObj = {
             $inc: null
@@ -102,7 +128,8 @@ module.exports = {
             };
         }
 
-        return db.getCollection().update({_id: objectId}, voteObj)
+        return db.getMinerStoryCollection(minerId)
+            .update({_id: objectId}, voteObj)
             .then(function() {
                 return Promise.resolve(updatedStory => {
                     if (upvote) {

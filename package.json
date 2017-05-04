@@ -63,6 +63,7 @@
     "flow-bin": "^0.40.0",
     "html-webpack-plugin": "^2.28.0",
     "jest": "^19.0.2",
+    "mocha": "^3.3.0",
     "nodemon": "^1.11.0",
     "react-addons-test-utils": "^15.4.2",
     "react-test-renderer": "^15.4.2",
@@ -115,7 +116,7 @@
     "flow": "flow check",
     "lint:app": "eslint app/",
     "postinstall": "npm run build",
-    "test": "swagger project test",
+    "test":  "find ./test/ -name '*.js' | xargs mocha -R spec",
     "test:app": "npm run flow && npm run lint:app && npm run test:unit",
     "test:unit": "jest",
     "test:unit:watch": "jest --watch"

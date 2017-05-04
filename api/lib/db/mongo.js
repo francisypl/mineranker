@@ -5,32 +5,38 @@ const Promise = require('bluebird');
 
 var database;
 
-if (!database) {
-    MongoClient.connect(
-        config.get('db.url'),
-        config.get('db.config'),
-        function(err, db) {
-            if (err) {
-                console.log(err);
-            }
-
-            database = Promise.promisifyAll(db);
+MongoClient.connect(
+    config.get('db.url'),
+    config.get('db.config'),
+    function(err, db) {
+        if (err) {
+            console.log(err);
         }
-    );
-}
+
+        database = Promise.promisifyAll(db);
+    }
+);
 
 module.exports = {
     /**
      * Returns the default collection.
+     * @param minerId {String} - the id of the miner.
      */
-    getCollection() {
-        return database.collection(config.get('db.default_collection'));
+    getMinerStoryCollection(minerId) {
+        return database.collection(minerId);
     },
-     getMinerCollection() {
+
+    getMinerCollection() {
         var minerCollection = database.collection(config.get('db.miner_collection'));
         minerCollection.createIndex({name:1}, {unique: true});
 
         return minerCollection;
+    },
+
+    getRankerCollection() {
+        var rankerCollection = database.collection(config.get('db.ranker_collection'));
+        rankerCollection.createIndex({name:1}, {unique: true});
+        return rankerCollection;
     },
 
     /**

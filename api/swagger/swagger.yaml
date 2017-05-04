@@ -34,6 +34,22 @@ paths:
           description: the id of the last story retrieved
           required: false
           type: string
+        - name: miners
+          in: query
+          description: a list of registered miner ids to get data from
+          required: true
+          type: array
+          items:
+            type: string
+          collectionFormat: csv
+        - name: rankers
+          in: query
+          description: a list of registered ranker ids to rank miner data
+          required: true
+          type: array
+          items:
+            type: string
+          collectionFormat: csv
       responses:
         "200":
           description: Success
@@ -47,47 +63,43 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
-    post:
-      description: Miners use this route to insert new enriched stories into the system
-      operationId: insertNewStories
+  /rankers:
+    x-swagger-router-controller: rankers
+    get:
+      description: Get registered rankers
+      operationId: getRankers
       parameters:
-        - name: newStory
-          in: body
-          description: The name of the person to whom to say hello
-          required: true
-          schema: 
+        - name: q
+          in: query
+          description: name or part of the name of ranker to fetch
+          required: false
+          type: string
+      responses:
+        "200": 
+          description: Success
+          schema:
             type: array
             items:
-              $ref: "#/definitions/InsertStory"
+              $ref: "#/definitions/Ranker"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    post:
+      description: Register a new ranker
+      operationId: registerNewRanker
+      parameters:
+        - name: newRanker
+          in: body
+          description: the new ranker
+          required: true
+          schema:
+            $ref: "#/definitions/Ranker"
       responses:
         "200":
           description: Success
           schema:
             $ref: "#/definitions/SuccessResponse"
-        # responses may fall through to errors
-        default:
-          description: Error
-          schema:
-            $ref: "#/definitions/ErrorResponse"
-    patch:
-      description: To upvote or downvote a story
-      operationId: voteOnStory
-      parameters:
-        - name: story_id
-          in: query
-          description: the id of the story to upvote or downvote on
-          required: true
-          type: string
-        - name: upvote
-          in: query
-          description: upvote a story, if it is false then downvote a story
-          required: true
-          type: boolean
-      responses:
-        "200":
-          description: Success
-          schema:
-            $ref: "#/definitions/Story"
         default:
           description: Error
           schema:
@@ -105,7 +117,7 @@ paths:
           type: string
       responses:
         "200": 
-          description: Succcess
+          description: Success
           schema:
             type: array
             items:
@@ -166,6 +178,65 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+  /miners/{miner_id}/story:
+    x-swagger-router-controller: miners
+    post:
+      description: Miners use this route to insert new enriched stories into the system
+      operationId: insertNewStories
+      parameters:
+        - name: miner_id
+          in: path
+          description: the id of the miner this story belongs to
+          required: true
+          type: string
+        - name: newStory
+          in: body
+          description: The name of the person to whom to say hello
+          required: true
+          schema: 
+            type: array
+            items:
+              $ref: "#/definitions/InsertStory"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/SuccessResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /miners/{miner_id}/story/{story_id}:
+    x-swagger-router-controller: miners
+    patch:
+      description: To upvote or downvote a story
+      operationId: voteOnStory
+      parameters:
+        - name: miner_id
+          in: path
+          description: the id of the miner this story belongs to
+          required: true
+          type: string
+        - name: story_id
+          in: path
+          description: the id of the story to upvote or downvote on
+          required: true
+          type: string
+        - name: upvote
+          in: query
+          description: upvote a story, if it is false then downvote a story
+          required: true
+          type: boolean
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Story"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
     
   /swagger:
     x-swagger-pipe: swagger_raw
@@ -185,12 +256,10 @@ definitions:
         type: string
   InsertStory:
     required:
-      - source
       - title
       - url
+      - extra
     properties:
-      source:
-        type: string
       title:
         type: string
       url:
@@ -199,6 +268,8 @@ definitions:
         type: string
       description:
         type: string
+      extra:
+        type: object
   Story:
     type: object
     allOf:
@@ -227,3 +298,18 @@ definitions:
         type: string
       description: 
         type: string
+  Ranker:
+    type: object
+    required:
+      - name
+      - filter
+      - sort
+    properties:
+      _id:
+        type: string
+      name:
+        type: string
+      filter:
+        type: object
+      sort:
+       type: object

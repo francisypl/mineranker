@@ -1,81 +1,69 @@
 const story = require('../models/story');
 const getObjectId = require('../lib/db/mongo').getObjectId;
-const config = require('config');
+const miner = require('../models/miner');
+const ranker = require('../models/rankers');
+const Promise = require('bluebird');
 const _ = require('underscore');
 
 function getStories(req, res) {
-    let options = {};
-    let filter = {};
+    let miners = _.filter(req.query.miners.split(','), val => val !== '');
+    let rankers = _.filter(req.query.rankers.split(','), val => val !== '');
 
-    // If there is a query param named limit, else it is the default limit
-    if (_.has(req.query, 'limit')) {
-        options.limit = parseInt(req.query.limit);
-    }
-    else {
-        options.limit = config.get('story.fetchLimit');
+    if (_.isEmpty(miners)) {
+        return res.json(400, {message: 'No miners are selected'});
     }
 
-    // If there is an offset query param, find all stories before it
-    if (_.has(req.query, 'offset')) {
-        let offsetId = getObjectId(req.query.offset);
-        if (offsetId) {
-            filter = {
-                _id: {
-                    '$lt': offsetId
-                }
-            };
+    let invalidIds = [];
+    _.each(miners.concat(rankers), idStr => {
+        if (_.isNull(getObjectId(idStr))) {
+            invalidIds.push(idStr);
         }
+    });
+    if (!_.isEmpty(invalidIds)) {
+        return res.json(400, {message: `${invalidIds.join()} are invalid ids`});
     }
 
-    options.sort = [['_id', 'desc']];
+    let richMiners, richRankers;
+    // Fetch all miners, make sure they are registered
+    Promise.all(_.map(miners, miner.fetchById))
+        .then(function(result) {
+            richMiners = result;
 
-    story.fetchAll(filter, options)
+            if (_.isEmpty(rankers)) {
+                return Promise.resolve([]);
+            }
+
+            // Fetch all rankers, make sure they are registered
+            return Promise.all(_.map(rankers, ranker.fetchById));
+        })
+        .then(function(result) {
+            richRankers = result;
+            // Get stories from the miners
+            return Promise.all(_.map(richMiners, miner => {
+                return story.fetchMinerStories(miner._id);
+            }));
+        })
         .then(function(stories) {
-            return res.json(200, stories);
+            let mappedStories = _.map(stories, function(story, index) {
+                let retObj = {};
+
+                retObj[richMiners[index]._id] = story;
+
+                return retObj;
+            });
+
+            let rankedStories = ranker.rankStories(mappedStories, richRankers, 30);
+
+            return res.json(200, {
+                stories: rankedStories.stories,
+                pagination: rankedStories.page
+            });
         })
         .catch(function(err) {
-            console.log(err);
-            return res.json(400, 'Failed to fetch stories');
-        });
-}
-
-function insertNewStories(req, res) {
-    let stories = req.body;
-
-    story.validateStories(stories)
-        .then(function() {
-            return story.insertStories(stories);
-        })
-        .then(function(numInserted) {
-            return res.json(200, {message: `Inserted ${numInserted} stories`});
-        })
-        .catch(function(err) {
-            console.log(err);
-            return res.json(400, {message: 'Failed to insert stories'});
-        });
-}
-
-function voteOnStory(req, res) {
-    let fetchedStory;
-    let {story_id, upvote} = req.query;
-    upvote = upvote.toLowerCase() === 'true';
-
-    story.fetchById(story_id)
-        .then(function(resultStory) {
-            fetchedStory = resultStory;
-            return story.voteOnStory(fetchedStory._id, upvote);
-        })
-        .then(function(transformer) {
-            return res.json(200, transformer(fetchedStory));
-        })
-        .catch(function(err) {
-            console.log(err);
-            return res.json(400, {message: 'Failed to vote on story'});
+            return res.json(400, {message: `Error: ${err}`});
         });
 }
 
 module.exports = {
-    getStories,
-    insertNewStories,
-    voteOnStory
+    getStories
 };

@@ -2,6 +2,11 @@ const _ = require('underscore');
 const Promise = require('bluebird');
 const db = require('../lib/db/mongo');
 
+function formatMiner(miner) {
+    miner._id = String(miner._id);
+    return miner;
+}
+
 module.exports = {
     /**
      * Insert miners into the database
@@ -30,10 +35,10 @@ module.exports = {
         return db.getMinerCollection().find({_id: objId}).toArray()
             .then(function(fetchedMiners) {
                 if (_.isEmpty(fetchedMiners)) {
-                    return Promise.reject('id is not found');
+                    return Promise.reject(`Miner ${minersId} is not found`);
                 }
 
-                return Promise.resolve(fetchedMiners[0]);
+                return Promise.resolve(formatMiner(fetchedMiners[0]));
             });
     },
 
@@ -45,8 +50,9 @@ module.exports = {
      */
     fetchAll(query, options) {
         return db.getMinerCollection().find(query, options).toArray()
-            .then(function(miner) {
-                return Promise.resolve(miner);
+            .then(function(miners) {
+                miners = _.map(miners, formatMiner);
+                return Promise.resolve(miners);
             });
     },
 
@@ -63,7 +69,7 @@ module.exports = {
         }
         return db.getMinerCollection().update({_id: objectId}, pathchedMiner)
             .then(function(updatedMiner) {
-                return Promise.resolve(updatedMiner);
+                return Promise.resolve(formatMiner(updatedMiner));
             });
     }
 };
