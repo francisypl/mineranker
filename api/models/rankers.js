@@ -69,6 +69,11 @@ class StoriesIterator {
             if (!_.isNull(lastStory) && !_.isUndefined(lastStory)) {
                 pageObj[id] = lastStory._id;
             }
+            // if we reached the last element, we keep the pagination on the
+            // last element to avoid starting over
+            else {
+                pageObj[id] = this.stories[index][id][lastVisitedStoryIndex - 1];
+            }
         });
 
         return pageObj;
