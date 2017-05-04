@@ -52,9 +52,12 @@ function getStories(req, res) {
                 return retObj;
             });
 
-            let {rankedStories, page} = ranker.rankStories(mappedStories, richRankers, 30);
+            let rankedStories = ranker.rankStories(mappedStories, richRankers, 30);
 
-            return res.json(200, {rankedStories, page});
+            return res.json(200, {
+                stories: rankedStories.stories,
+                pagination: rankedStories.page
+            });
         })
         .catch(function(err) {
             return res.json(400, {message: `Error: ${err}`});
