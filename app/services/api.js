@@ -12,11 +12,11 @@ function getUrl (path: string): string {
 
 export function fetchPosts (pagination: string): Promise<Object> {
   const miners = [
-    '5900fbc638675e6d72747b45',
-    '5900d2cf0b9c9157e66e5f56'
+    '590f8811d809d40011b5c7b5',
+    '590f8811d809d40011b5c7b4'
   ];
   const rankers = [
-    '590a1ead2bd9c4b630e27570'
+    '590f93a4d809d40011b5ca67'
   ];
   let query = {
     limit: 30,
