@@ -10,13 +10,23 @@ function getUrl (path: string): string {
   return `${url}${path}`
 }
 
-export function fetchPosts (lastId: string): Promise<Object> {
+export function fetchPosts (pagination: string): Promise<Object> {
+  const miners = [
+    '5900fbc638675e6d72747b45',
+    '5900d2cf0b9c9157e66e5f56'
+  ];
+  const rankers = [
+    '590a1ead2bd9c4b630e27570'
+  ];
   let query = {
-    limit: 30
+    limit: 30,
+    miners: miners.join(),
+    rankers: rankers.join()
   };
 
-  if (lastId !== '0') {
-    query.offset = lastId
+  debugger;
+  if (pagination !== '') {
+    query.pagination = pagination
   }
 
   return new Promise((resolve, reject) => (
@@ -25,6 +35,7 @@ export function fetchPosts (lastId: string): Promise<Object> {
       .query(query)
       .set('Content-Type', 'application/json')
       .end((err, res) => {
+        debugger;
         return err ? reject(err) : resolve(res.body)
       })
   ))

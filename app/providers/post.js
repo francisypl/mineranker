@@ -45,10 +45,10 @@ class PostProvider extends Component {
   }
 
   onLoadMore (): void {
-    const { dispatch, lastId } = this.props
-    console.log('loading more | lastId', lastId)
+    const { dispatch, pagination } = this.props
+    console.log('loading more | pagination', pagination)
 
-    dispatch(getPosts(lastId, api))
+    dispatch(getPosts(pagination, api))
   }
 }
 

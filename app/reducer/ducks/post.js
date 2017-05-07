@@ -11,7 +11,7 @@ type State = {|
   error?: string,
   isWorking: boolean,
   posts: Array<PostType>,
-  lastId: string,
+  pagination: string,
   loadMoreThreshold: number,
 |}
 
@@ -19,15 +19,16 @@ const POST_FETCHING  = '@post/FETCHING_POSTS'
 const POST_FETCHED   = '@post/FETCHED_POSTS'
 const POST_FETCH_ERR = '@post/FETCHING_POSTS_ERROR'
 
-export function getPosts (lastId: string = '0', api: Api) {
+export function getPosts (pagination: string = '', api: Api) {
   return async function (dispatch: Dispatch) {
     log('[getPosts] attempting to fetch posts')
 
-    dispatch({ type: POST_FETCHING, payload: { lastId } })
+    dispatch({ type: POST_FETCHING, payload: { pagination } })
 
     try {
-      const posts = await api.fetchPosts(lastId)
-      dispatch({ type: POST_FETCHED, payload: { posts } })
+      const storiesObj = await api.fetchPosts(pagination)
+      debugger;
+      dispatch({ type: POST_FETCHED, payload: storiesObj })
     }
     catch (e) {
       dispatch({ type: POST_FETCH_ERR, payload: e })
@@ -40,7 +41,7 @@ const initialState = {
   error: undefined,
   isWorking: false,
   posts: [],
-  lastId: '0',
+  pagination: '',
   loadMoreThreshold: 4,
 }
 
@@ -55,9 +56,11 @@ export default function reducer (state: State = initialState, action: Action) {
     }
 
     case POST_FETCHED: {
-      const { posts } = payload
+      debugger;
+      const stories = payload.stories;
+      const pagination = payload.pagination;
       // Make sure any http link we get is transformed to an https link
-      const formattedPosts = posts.map((post) => {
+      const formattedPosts = stories.map((post) => {
         let httpsUrl = '';
         if (_.has(post, 'og_image_url')) {
           httpsUrl = post.og_image_url.replace(/^http:/, 'https:')
@@ -68,12 +71,11 @@ export default function reducer (state: State = initialState, action: Action) {
         }
       })
       // Get the last id from the list of latest posts
-      const lastId = formattedPosts.length ? formattedPosts[formattedPosts.length - 1]._id : state.lastId
       return {
         ...state,
         isWorking: false,
         posts: state.posts.concat(formattedPosts),
-        lastId,
+        pagination
       }
     }
 
