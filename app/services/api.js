@@ -24,7 +24,6 @@ export function fetchPosts (pagination: string): Promise<Object> {
     rankers: rankers.join()
   };
 
-  debugger;
   if (pagination !== '') {
     query.pagination = pagination
   }
@@ -35,7 +34,6 @@ export function fetchPosts (pagination: string): Promise<Object> {
       .query(query)
       .set('Content-Type', 'application/json')
       .end((err, res) => {
-        debugger;
         return err ? reject(err) : resolve(res.body)
       })
   ))

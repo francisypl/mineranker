@@ -27,7 +27,6 @@ export function getPosts (pagination: string = '', api: Api) {
 
     try {
       const storiesObj = await api.fetchPosts(pagination)
-      debugger;
       dispatch({ type: POST_FETCHED, payload: storiesObj })
     }
     catch (e) {
@@ -56,7 +55,6 @@ export default function reducer (state: State = initialState, action: Action) {
     }
 
     case POST_FETCHED: {
-      debugger;
       const stories = payload.stories;
       const pagination = payload.pagination;
       // Make sure any http link we get is transformed to an https link
