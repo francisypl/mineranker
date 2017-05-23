@@ -14,9 +14,11 @@ import * as api from './../services/api';
 
 // pull any application data from redux needed for view
 function mapStateToProps(state) {
-    return {
+    let finalObj =  {
         ...state.post
     };
+    finalObj.currentMiners = state.miners.currentMiners;
+    return finalObj;
 }
 
 class PostProvider extends Component {
@@ -25,7 +27,7 @@ class PostProvider extends Component {
 
         // Detect if we're on mobile so we can automuted videos to autoplay
         const md = new MobileDetect(window.navigator.userAgent);
-        this.isMobile = (md.mobile() !== null || md.tablet() !== null)
+        this.isMobile = (md.mobile() !== null || md.tablet() !== null);
 
         // Bind functions
         this.onLoadMore = this.onLoadMore.bind(this);
@@ -40,15 +42,14 @@ class PostProvider extends Component {
             ...this.props,
             onLoadMore: this.onLoadMore
         };
-
         return (<PostView {...props}/>);
     }
 
     onLoadMore() {
-        const {dispatch, pagination} = this.props;
+        const {dispatch, pagination, currentMiners} = this.props;
         console.log('loading more | pagination', pagination);
 
-        dispatch(getPosts(pagination, api));
+        dispatch(getPosts(pagination, api, currentMiners));
     }
 }
 

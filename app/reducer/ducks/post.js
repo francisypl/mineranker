@@ -1,22 +1,23 @@
 import debug from 'debug';
 import _ from 'underscore';
 
-const log = debug('reducer:ducks:post')
+const log = debug('reducer:ducks:post');
 
-const POST_FETCHING = '@post/FETCHING_POSTS'
-const POST_FETCHED = '@post/FETCHED_POSTS'
-const POST_FETCH_ERR = '@post/FETCHING_POSTS_ERROR'
+const POST_FETCHING = '@post/FETCHING_POSTS';
+const POST_FETCHED = '@post/FETCHED_POSTS';
+const POST_FETCH_ERR = '@post/FETCHING_POSTS_ERROR';
 
-export function getPosts(pagination = '', api) {
+export function getPosts(pagination = '', api, miners, rankers) {
     return async function(dispatch) {
         log('[getPosts] attempting to fetch posts');
 
         dispatch({type: POST_FETCHING, payload: {pagination}});
 
         try {
-            const storiesObj = await api.fetchPosts(pagination);
+            const storiesObj = await api.fetchPosts(pagination, miners, rankers);
             dispatch({type: POST_FETCHED, payload: storiesObj});
-        } catch (e) {
+        }
+        catch (e) {
             dispatch({type: POST_FETCH_ERR, payload: e});
         }
     };
@@ -37,53 +38,53 @@ export default function reducer(state = initialState, action) {
     log('[reducer] processing payload');
 
     switch (type) {
-        case POST_FETCHING:
-            {
-                return {
-                    ...state,
-                    isWorking: true
-                };
-            }
+    case POST_FETCHING:
+        {
+            return {
+                ...state,
+                isWorking: true
+            };
+        }
 
-        case POST_FETCHED:
-            {
-                const stories = payload.stories;
-                const pagination = payload.pagination;
-                // Make sure any http link we get is transformed to an https link
-                const formattedPosts = stories.map((post) => {
-                    let httpsUrl = '';
-                    if (_.has(post, 'og_image_url')) {
-                        httpsUrl = post.og_image_url.replace(/^http:/, 'https:');
-                    }
-                    return {
-                        ...post,
-                        og_image_url: httpsUrl
-                    };
-                })
-                // Get the last id from the list of latest posts
+    case POST_FETCHED:
+        {
+            const stories = payload.stories;
+            const pagination = payload.pagination;
+            // Make sure any http link we get is transformed to an https link
+            const formattedPosts = stories.map((post) => {
+                let httpsUrl = '';
+                if (_.has(post, 'og_image_url')) {
+                    httpsUrl = post.og_image_url.replace(/^http:/, 'https:');
+                }
                 return {
-                    ...state,
-                    isWorking: false,
-                    posts: state.posts.concat(formattedPosts),
-                    pagination
+                    ...post,
+                    og_image_url: httpsUrl
                 };
-            }
+            });
+            // Get the last id from the list of latest posts
+            return {
+                ...state,
+                isWorking: false,
+                posts: state.posts.concat(formattedPosts),
+                pagination
+            };
+        }
 
-        case POST_FETCH_ERR:
-            {
-                // Make error message friendly
-                const error = 'There was a problem while processing your request. Please try again.';
-                return {
-                    ...state,
-                    isWorking: false,
-                    hasError: true,
-                    error
-                };
-            }
+    case POST_FETCH_ERR:
+        {
+            // Make error message friendly
+            const error = 'There was a problem while processing your request. Please try again.';
+            return {
+                ...state,
+                isWorking: false,
+                hasError: true,
+                error
+            };
+        }
 
-        default:
-            {
-                return state;
-            }
+    default:
+        {
+            return state;
+        }
     }
 }
