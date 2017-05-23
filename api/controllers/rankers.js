@@ -31,7 +31,12 @@ function registerNewRanker(req, res) {
         });
 }
 
+function getRankerById(req, res) {
+    
+}
+
 module.exports = {
     getRankers,
-    registerNewRanker
+    registerNewRanker,
+    getRankerById
 };

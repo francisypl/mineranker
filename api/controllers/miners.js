@@ -112,10 +112,15 @@ function voteOnStory(req, res) {
         });
 }
 
+function getMinerById(req, res) {
+    
+}
+
 module.exports = {
     getMiners,
     registerNewMiners,
     modifyMinerDescription,
     insertNewStories,
-    voteOnStory
+    voteOnStory,
+    getMinerById
 };

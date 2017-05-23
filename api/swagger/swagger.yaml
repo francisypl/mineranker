@@ -109,6 +109,26 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+  /rankers/{ranker_id}:
+    x-swagger-router-controller: rankers
+    get:
+      description: Get a single ranker by its id
+      operationId: getRankerById
+      parameters:
+        - name: ranker_id
+          in: path
+          description: the id of the ranker to fetch
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Ranker"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
   /miners:
     x-swagger-router-controller: miners
     get:
@@ -154,6 +174,24 @@ paths:
             $ref: "#/definitions/ErrorResponse"
   /miners/{miner_id}:
     x-swagger-router-controller: miners
+    get:
+      description: Get a single miner by its id
+      operationId: getMinerById
+      parameters:
+        - name: miner_id
+          required: true
+          in: path
+          type: string
+          description: the id of the miner to fetch
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Miner"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
     patch:
       description: To update description of a miner
       operationId: modifyMinerDescription
