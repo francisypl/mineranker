@@ -113,7 +113,16 @@ function voteOnStory(req, res) {
 }
 
 function getMinerById(req, res) {
-    
+    const miner_id = req.swagger.params.miner_id.value;
+
+    miner.fetchById(miner_id)
+        .then(function(resultMiner) {
+            return res.json(200, resultMiner);
+        })
+        .catch(function(err) {
+            console.log(err);
+            return res.json(400, {message: `Miner with id ${miner_id} is not found`});
+        });
 }
 
 module.exports = {
