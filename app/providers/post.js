@@ -14,10 +14,11 @@ import * as api from './../services/api';
 
 // pull any application data from redux needed for view
 function mapStateToProps(state) {
-    let finalObj =  {
+    let finalObj = {
         ...state.post
     };
     finalObj.currentMiners = state.miners.currentMiners;
+    finalObj.currentRankers = state.rankers.currentRankers;
     return finalObj;
 }
 
@@ -35,6 +36,8 @@ class PostProvider extends Component {
 
     componentDidMount() {
         this.onLoadMore();
+
+        
     }
 
     render() {
@@ -46,10 +49,15 @@ class PostProvider extends Component {
     }
 
     onLoadMore() {
-        const {dispatch, pagination, currentMiners} = this.props;
+        const {
+            dispatch,
+            pagination,
+            currentMiners,
+            currentRankers
+        } = this.props;
         console.log('loading more | pagination', pagination);
 
-        dispatch(getPosts(pagination, api, currentMiners));
+        dispatch(getPosts(pagination, api, currentMiners, currentRankers));
     }
 }
 
