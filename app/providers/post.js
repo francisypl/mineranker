@@ -2,12 +2,15 @@ import React, {Component} from 'react';
 import MobileDetect from 'mobile-detect';
 import {connect} from 'react-redux';
 import {push} from 'react-router-redux';
+import _ from 'underscore';
 
 // import the root view that this provider is connected to
 import PostView from './../views/post';
 
 // grab any actions we need to perform
 import {getPosts} from './../reducer/ducks/post';
+import {getMinersByIds} from './../reducer/ducks/miners';
+import {getRankersByIds} from './../reducer/ducks/rankers';
 
 // import any services we might need
 import * as api from './../services/api';
@@ -19,6 +22,8 @@ function mapStateToProps(state) {
     };
     finalObj.currentMiners = state.miners.currentMiners;
     finalObj.currentRankers = state.rankers.currentRankers;
+    finalObj.richRankers = state.rankers.richRankers;
+    finalObj.richMiners = state.miners.richMiners;
     return finalObj;
 }
 
@@ -32,12 +37,32 @@ class PostProvider extends Component {
 
         // Bind functions
         this.onLoadMore = this.onLoadMore.bind(this);
+        this.updateCurrentMiners = this.updateCurrentMiners.bind(this);
+        this.updateCurrentRankers = this.updateCurrentRankers.bind(this);
     }
 
     componentDidMount() {
+        this.updateCurrentMiners();
+        this.updateCurrentRankers();
         this.onLoadMore();
+    }
 
-        
+    updateCurrentMiners() {
+        const {
+            dispatch,
+            currentMiners
+        } = this.props;
+
+        dispatch(getMinersByIds(api, currentMiners));
+    }
+
+    updateCurrentRankers() {
+        const {
+            dispatch,
+            currentRankers
+        } = this.props;
+
+        dispatch(getRankersByIds(api, currentRankers));
     }
 
     render() {

@@ -8,6 +8,30 @@ function getUrl(path) {
     return `${url}${path}`;
 }
 
+export function fetchRankerById(rankerId) {
+    return new Promise((resolve, reject) => {
+        request.get(getUrl(`/api/v1/rankers/${rankerId}`))
+        .set('Content-Type', 'application/json')
+        .end((err, res) => {
+            return err
+                ? reject(err)
+                : resolve(res.body);
+        });
+    });
+}
+
+export function fetchMinerById(minerId) {
+    return new Promise((resolve, reject) => {
+        request.get(getUrl(`/api/v1/miners/${minerId}`))
+        .set('Content-Type', 'application/json')
+        .end((err, res) => {
+            return err
+                ? reject(err)
+                : resolve(res.body);
+        });
+    });
+}
+
 export function fetchPosts(pagination, miners, rankers) {
     // const miners = [
     //   '590f8811d809d40011b5c7b5',

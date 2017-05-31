@@ -11,7 +11,6 @@ export function getPosts(pagination = '', api, miners, rankers) {
     return async function(dispatch) {
         log('[getPosts] attempting to fetch posts');
 
-        debugger;
         dispatch({type: POST_FETCHING, payload: {pagination}});
 
         try {

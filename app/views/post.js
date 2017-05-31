@@ -19,6 +19,8 @@ class PostView extends Component {
             loadMoreThreshold,
             isWorking,
             hasError,
+            richRankers,
+            richMiners,
             error
         } = this.props;
 
@@ -32,8 +34,8 @@ class PostView extends Component {
                         news
                     </a>
                 </div>
-                <Toolbar label={'miners'}/>
-                <Toolbar label={'rankers'}/>
+                {richMiners && <Toolbar label={'miners'} miners={richMiners}/>}
+                {richRankers && <Toolbar label={'rankers'} rankers={richRankers}/>}
                 <div className={css(styles.wrapper)}>
                     {hasError && (
                         <span className={css(styles.error)}>{error}</span>

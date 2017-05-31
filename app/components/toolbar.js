@@ -5,14 +5,23 @@ var styles;
 
 class Toolbar extends Component {
     render() {
-        const {label} = this.props;
+        const {label, miners, rankers} = this.props;
+        var listVals = label == 'miners' ? miners : rankers;
         return (
             <div className={css(styles.toolbar)}>
                 <div className={css(styles.label)}>
                     <span style={{
-                        textAlign: 'center'
+                        textAlign: 'center',
+                        fontWeight: 900
                     }}>{label}</span>
                 </div>
+                {listVals.map((listVal, i) => (
+                    <div key={`${label}-${i}`} className={css(styles.label, styles.clickable)}>
+                        <span style={{
+                            textAlign: 'center'
+                        }}>{listVal.name}</span>
+                    </div>
+                ))}
             </div>
         );
     }
@@ -36,6 +45,10 @@ styles = StyleSheet.create({
         height: '100%',
         width: '200px',
         margin: '0 10px 0 10px'
+    },
+
+    clickable: {
+        cursor: 'pointer'
     }
 });
 
