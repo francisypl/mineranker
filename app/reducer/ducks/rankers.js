@@ -8,7 +8,7 @@ const RANKERS_FETCHED = '@post/FETCHED_RANKERS';
 const RANKERS_FETCH_ERR = '@post/FETCHING_RANKERS_ERROR';
 
 const initialState = {
-    currentRankers: ['590a1ead2bd9c4b630e27570'],
+    currentRankers: ['590f93a4d809d40011b5ca67'],
     richRankers: [],
     isWorking: false,
     hasError: false,

@@ -33,16 +33,6 @@ export function fetchMinerById(minerId) {
 }
 
 export function fetchPosts(pagination, miners, rankers) {
-    // const miners = [
-    //   '590f8811d809d40011b5c7b5',
-    //   '590f8811d809d40011b5c7b4'
-    // ];
-    // const rankers = [
-    //   '590f93a4d809d40011b5ca67'
-    // ];
-    // dev
-    // const miners = ['5900d2cf0b9c9157e66e5f56', '5900fbc638675e6d72747b45'];
-    // const rankers = ['590a1ead2bd9c4b630e27570'];
     let query = {
         limit: 30,
         miners: miners.join(),
