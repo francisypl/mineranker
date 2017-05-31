@@ -31,7 +31,21 @@ function registerNewRanker(req, res) {
         });
 }
 
+function getRankerById(req, res) {
+    const ranker_id = req.swagger.params.ranker_id.value;
+
+    ranker.fetchById(ranker_id)
+        .then(function(resultRanker) {
+            return res.json(200, resultRanker);
+        })
+        .catch(function(err) {
+            console.log(err);
+            return res.json(400, {message: `ranker with id ${ranker_id} is not found`});
+        });
+}
+
 module.exports = {
     getRankers,
-    registerNewRanker
+    registerNewRanker,
+    getRankerById
 };
